@@ -1,8 +1,10 @@
 package barco;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,10 +12,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
+import javax.swing.SwingConstants;
+import javax.swing.JRadioButton;
 
 public class Pantalla extends JFrame {
 
 	private static Pantalla pantalla;
+	private CasillaDePantalla[][] casillasJugador;
+	private CasillaDePantalla[][] casillasMaquina;
 	private JPanel contentPane;
 	private JPanel panelTitulo;
 	private JLabel titulo;
@@ -21,6 +27,10 @@ public class Pantalla extends JFrame {
 	private JPanel panelDelTexto;
 	private JLabel texto;
 	private JPanel panelDeJuego;
+	private JPanel panelBotones;
+	private JPanel panelTableros;
+	private JPanel panelJugador;
+	private JPanel panelMaquina;
 	
 
 	/**
@@ -43,6 +53,11 @@ public class Pantalla extends JFrame {
 	
 	
 	public void escribir(String pTexto) throws InterruptedException {
+		
+		
+		// Pre: String no null con el texto a poner
+		// Post: El campo de texto del frame ha sido sobrescrito por el valor de entrada
+		//       escribiendo las letras una a una a un ritmo de 10 letras/segundo aprox.
 		
 		this.texto.setText("");
 		
@@ -76,6 +91,42 @@ public class Pantalla extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPanelTitulo(), BorderLayout.NORTH);
 		contentPane.add(getPanelCentral(), BorderLayout.CENTER);
+		
+		
+		
+		this.casillasJugador = new CasillaDePantalla[10][10];
+		this.casillasMaquina = new CasillaDePantalla[10][10];
+		
+		this.panelJugador.add(new JLabel());
+		this.panelMaquina.add(new JLabel());
+		
+		
+		for (int i = 1; i != 11; i++) {
+			char c = (char) (i + 96);
+			this.panelJugador.add(new JLabel(Character.toString(c), SwingConstants.CENTER)); 
+			this.panelMaquina.add(new JLabel(Character.toString(c), SwingConstants.CENTER));
+		}
+		
+		for (int i = 0; i != 10; i++) {
+			
+			this.panelJugador.add(new JLabel(Integer.toString(i+1), SwingConstants.CENTER));
+			this.panelMaquina.add(new JLabel(Integer.toString(i+1), SwingConstants.CENTER));
+
+			
+			for (int j = 0; j != 10; j++) {
+				CasillaDePantalla cas = new CasillaDePantalla(i,j);
+				CasillaDePantalla cas2 = new CasillaDePantalla(i,j);
+
+				this.panelJugador.add(cas);
+				this.panelMaquina.add(cas2);
+	
+				
+			}
+		}
+	
+		this.panelJugador.setBorder(BorderFactory.createLineBorder(Color.pink));
+		this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
+		
 		this.setVisible(true);
 	}
 
@@ -89,6 +140,7 @@ public class Pantalla extends JFrame {
 	private JLabel getTitulo() {
 		if (titulo == null) {
 			titulo = new JLabel();
+			titulo.setHorizontalAlignment(SwingConstants.CENTER);
 			titulo.setIcon(new ImageIcon(".\\materiales\\titulo.png"));
 		}
 		return titulo;
@@ -97,7 +149,7 @@ public class Pantalla extends JFrame {
 		if (panelCentral == null) {
 			panelCentral = new JPanel();
 			panelCentral.setLayout(new BorderLayout(0, 0));
-			panelCentral.add(getPanelDelTexto(), BorderLayout.NORTH);
+			panelCentral.add(getPanelDelTexto(), BorderLayout.SOUTH);
 			panelCentral.add(getPanelDeJuego(), BorderLayout.CENTER);
 		}
 		return panelCentral;
@@ -113,14 +165,46 @@ public class Pantalla extends JFrame {
 		if (texto == null) {
 			texto = new JLabel("");
 			texto.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
+			
 		}
 		return texto;
 	}
 	private JPanel getPanelDeJuego() {
 		if (panelDeJuego == null) {
 			panelDeJuego = new JPanel();
-			panelDeJuego.setLayout(new GridLayout(1, 0, 0, 0));
+			panelDeJuego.setLayout(new BorderLayout(0, 0));
+			panelDeJuego.add(getPanelTableros(), BorderLayout.CENTER);
 		}
 		return panelDeJuego;
+	}
+	private JPanel getPanelBotones() {
+		if (panelBotones == null) {
+			panelBotones = new JPanel();
+		}
+		return panelBotones;
+	}
+	private JPanel getPanelTableros() {
+		if (panelTableros == null) {
+			panelTableros = new JPanel();
+			panelTableros.setLayout(new GridLayout(1, 3, 0, 0));
+			panelTableros.add(getPanelJugador());
+			panelTableros.add(getPanelBotones());
+			panelTableros.add(getPanelMaquina());
+		}
+		return panelTableros;
+	}
+	private JPanel getPanelJugador() {
+		if (panelJugador == null) {
+			panelJugador = new JPanel();
+			panelJugador.setLayout(new GridLayout(11, 11, 0, 0));
+		}
+		return panelJugador;
+	}
+	private JPanel getPanelMaquina() {
+		if (panelMaquina == null) {
+			panelMaquina = new JPanel();
+			panelMaquina.setLayout(new GridLayout(11, 11, 0, 0));
+		}
+		return panelMaquina;
 	}
 }
