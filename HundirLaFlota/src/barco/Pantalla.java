@@ -55,9 +55,16 @@ public class Pantalla extends JFrame {
 	public void escribir(String pTexto) throws InterruptedException {
 		
 		
-		// Pre: String no null con el texto a poner
-		// Post: El campo de texto del frame ha sido sobrescrito por el valor de entrada
-		//       escribiendo las letras una a una a un ritmo de 10 letras/segundo aprox.
+		/* Pre: String no null con el texto a poner
+		   Post: El campo de texto del frame ha sido sobrescrito por el valor de entrada
+		         escribiendo las letras una a una a un ritmo de 10 letras/segundo aprox. 
+		         
+		   
+		   NOTA: ESTE MÉTODO DEBERIA SER PRIVADO PARA ANTES DE ENTREGAR EL PROGRAMA FINAL.
+		         
+		         
+		         
+		         */
 		
 		this.texto.setText("");
 		
@@ -130,6 +137,9 @@ public class Pantalla extends JFrame {
 		this.setVisible(true);
 	}
 
+	
+	// Getters automaticos generados por WindowBuilder
+	
 	private JPanel getPanelTitulo() {
 		if (panelTitulo == null) {
 			panelTitulo = new JPanel();
