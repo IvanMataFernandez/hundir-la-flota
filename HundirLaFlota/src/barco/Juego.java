@@ -1,6 +1,9 @@
 package barco;
 
-public class Juego {
+import java.awt.Color;
+import java.util.Observable;
+
+public class Juego extends Observable {
 
 	
 	
@@ -11,8 +14,12 @@ public class Juego {
 	private boolean aceptaInput;
 	
 	
+	
 	private CasillaDeJuego[][] matrizJugador;
 	private CasillaDeJuego[][] matrizMaquina;
+	
+	private boolean[][] cambiosEnMatrizJugador;
+	private boolean[][] cambiosENMatrizIA;
 	
 	
 	private Juego() {
@@ -21,7 +28,13 @@ public class Juego {
 		this.aceptaInput = false;
 		this.matrizJugador = new CasillaDeJuego[10][10];
 		this.matrizMaquina = new CasillaDeJuego[10][10];
+		this.cambiosEnMatrizJugador = new boolean[10][10];
+		this.cambiosENMatrizIA = new boolean[10][10];
+
+		
 	}
+	
+	
 	
 	
 	public static Juego getJuego() {
@@ -37,16 +50,60 @@ public class Juego {
 			this.colSelec = pCas.getCol();
 			this.matrizJugadorSeleccionado = pCas.esDeJ1();
 			
+			
 		}
 		
 	//	System.out.println("La fila es: " +pF+" \nLa columna es: "+pC+"\n La matriz es del jugador: " +pJ);
 	}
 	
 	
+	private void actualizarMatrices() {
+		super.setChanged();
+		super.notifyObservers();
+		
+	}
+	
+	public Color calcularColor(int pF, int pC, boolean pJug) {
+		
+		boolean valor;
+		
+		if (pJug) {
+
+			valor = this.cambiosEnMatrizJugador[pF][pC];
+			this.cambiosEnMatrizJugador[pF][pC] = false;
+			
+			if (valor) {
+				return this.matrizJugador[pF][pC].obtenerColorActualizado();
+			} else {
+				return null;
+			}
+			
+		} else {
+
+			valor = this.cambiosENMatrizIA[pF][pC];
+			this.cambiosENMatrizIA[pF][pC] = false;
+			
+			if (valor) {
+				return this.matrizMaquina[pF][pC].obtenerColorActualizado();
+			} else {
+				return null;
+			}
+		}
+		
+
+		
+	}
+	
+
+	
 	private void esperarInput() {
+		
+		
 		this.aceptaInput = true;
 		this.filaSelec = -1;
 		
+		
+
 		while (this.filaSelec == -1) {
 			try {
 				Thread.sleep(100);
@@ -55,7 +112,7 @@ public class Juego {
 	}
 	
 	
-	private boolean posibleColocar (int f1, int c1, int f2, int c2, boolean horizontal) {
+	private boolean posibleColocar (Posicion p1, Posicion p2, boolean horizontal) {
 		
 		// ¿ SE PUEDE CON JAVA8?
 		
@@ -66,9 +123,9 @@ public class Juego {
 		int max;
 		
 		if (horizontal) {
-			cte = f1;
-			min = c1;
-			max = c2;
+			cte = p1.fila;
+			min = p1.columna;
+			max = p2.columna;
 			
 			while (min <= max && puede) {
 				puede = this.matrizJugador[cte][min] == null;
@@ -77,9 +134,9 @@ public class Juego {
 			
 			
 		} else {
-			cte = c1;
-			min = f1;
-			max = f2;
+			cte = p1.columna;
+			min = p1.fila;
+			max = p2.fila;
 				
 	
 			
@@ -94,7 +151,7 @@ public class Juego {
 		
 	}
 	
-	private void generarBarco(int f1, int c1, int f2, int c2, int f3, int c3, int f4, int c4, int tam, boolean horizontal) {
+	private void generarBarco(Posicion p1, Posicion p2, Posicion p3, Posicion p4, int tam, boolean horizontal) {
 		
 		// PARA HACER EL UPDATE EN LAS CASILLAS LABEL DESPUES IGUAL CREAR UN ARRAY DE BOOLEAN
 		// INDICANDO QUE CASILLA SE TOCO DESDE LA ULTIMA VEZ Y CUAL NO. EN ESE CASO HABRIA Q
@@ -110,39 +167,45 @@ public class Juego {
 		int cont = 0;
 		
 		if (horizontal) {
-			min = c1;
-			max = c2;
-			cte = f1;
+			min = p1.columna;
+			max = p2.columna;
+			cte = p1.fila;
 			
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
 				this.matrizJugador[cte][min] = new CasillaDeJuego(p);
+				this.cambiosEnMatrizJugador[cte][min] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
+				min++;
 			}
 			
 			
 			
 			
 		} else {
-			min = f1;
-			max = f2;
-			cte = c1;
+			min = p1.fila;
+			max = p2.fila;
+			cte = p1.columna;
 			
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
 				this.matrizJugador[min][cte] = new CasillaDeJuego(p);
+				this.cambiosEnMatrizJugador[min][cte] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
+				min++;
 			}
 			
 
 		}
 		
 		
-		for (int f = f3; f <= f4; f++) {
-			for (int c = c3; c <= c4; c++) {
+		for (int f = p3.fila; f <= p4.fila; f++) {
+			for (int c = p3.columna; c <= p4.columna; c++) {
 				
 				if (this.matrizJugador[f][c] == null) {
 					this.matrizJugador[f][c] = new CasillaDeJuego(null); // No barco asignado a casilla
+					this.cambiosEnMatrizJugador[f][c] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
+
 				}
 			}
 		}
@@ -161,27 +224,28 @@ public class Juego {
 		int seleccionesHechas;
 		boolean valido;
 		boolean selecHorizontal=false;
-		int f1=-1;
-		int f2=-1;
-		int c1=-1;
-		int c2=-1;
-		int f3=-1; // PARA LAS ESQUINAS MAS ALEJADAS DE LOS BARCOS
-		int f4=-1;
-		int c3=-1;
-		int c4=-1;
+		Posicion p1 = new Posicion();
+		Posicion p2 = new Posicion();
+		Posicion p3 = new Posicion();
+		Posicion p4 = new Posicion();
+
 		int aux;
 		
 		for (int i = 0; i != 4; i++) {
 			bConRes[i] = 4-i;
 		}
+
+
 		
 		while (barcosRestantes != 0) {
 			seleccionesHechas = 0;
+			
 			
 			while (seleccionesHechas != 2) {
 				valido = false;
 				while (!valido) {
 					// MSG MARCA POS.
+					
 					this.esperarInput();
 					valido = this.matrizJugadorSeleccionado;
 					
@@ -189,41 +253,48 @@ public class Juego {
 						// MSG DE ERROR DICIENDO QUE NO ES ESA LA TUYA
 					} else {
 						if (seleccionesHechas == 0) {
-							f1 = this.filaSelec;
-							c1 = this.colSelec;								
+							p1.fila = this.filaSelec;
+							p1.columna = this.colSelec;
+
+							
 						} else {
-							f2 = this.filaSelec;
-							c2 = this.colSelec;	
+							p2.fila = this.filaSelec;
+							p2.columna = this.colSelec;
+
 						}
+						System.out.println(seleccionesHechas);
+						
+
 						seleccionesHechas++;
 					}
 				}
+			}
 			
 				tamSelec = -1;
 				
-				if (f1 == f2) {
+				if (p1.fila == p2.fila) {
 					
-					if (c1 > c2) {
-						tamSelec = c1-c2;
-						aux = c2;
-						c2 = c1;
-						c1 = aux;
+					if (p1.columna > p2.columna) {
+						tamSelec = p1.columna-p2.columna;
+						aux = p2.columna;
+						p2.columna = p1.columna;
+						p1.columna = aux;
 					} else {
-						tamSelec = c2-c1;
+						tamSelec = p2.columna-p1.columna;
 						
 					}
 					
 					selecHorizontal = true;
 					
-				} else if (c1 == c2) {
+				} else if (p1.columna == p2.columna) {
 					
-					if (f1 > f2) {
-						tamSelec = f1-f2;
-						aux = f2;
-						f2 = f1;
-						f1 = aux;
+					if (p1.fila > p2.fila) {
+						tamSelec = p1.fila-p2.fila;
+						aux = p2.fila;
+						p2.fila = p1.fila;
+						p1.fila = aux;
 					} else {
-						tamSelec = f2-f1;
+						tamSelec = p2.fila-p1.fila;
 						
 					}
 					
@@ -235,20 +306,20 @@ public class Juego {
 					if (bConRes[tamSelec] != 0) {
 						
 						if (selecHorizontal) { // BARCO EN HORINZOTAL
-							f3 = Math.max(0, f1-1);
-							f4 = Math.min(9, f1+1);
+							p3.fila = Math.max(0, p1.fila-1);
+							p4.fila = Math.min(9, p1.fila+1);
 							
-							c3 = Math.max(0, c1-1);
-							c4 = Math.min(9, c2+1);
+							p3.columna = Math.max(0, p1.columna-1);
+							p4.columna = Math.min(9, p2.columna+1);
 								
 				
 							
 						} else { // BARCO EN VERTICAL
-							c3 = Math.max(0, c1-1);
-							c4 = Math.min(9, c2+1);
+							p3.columna = Math.max(0, p1.columna-1);
+							p4.columna = Math.min(9, p2.columna+1);
 							
-							f3 = Math.max(0, f1-1);
-							f4 = Math.min(9, f2+1);
+							p3.fila = Math.max(0, p1.fila-1);
+							p4.fila = Math.min(9, p2.fila+1);
 				
 							
 						}
@@ -256,12 +327,19 @@ public class Juego {
 						
 						// CALCULAR
 						
-						valido = this.posibleColocar(f1, c1, f2, c2, selecHorizontal);
+						
+						valido = this.posibleColocar(p1, p2, selecHorizontal);
+
+
 						
 						if (valido) {
-							this.generarBarco(f1, c1, f2, c2, f3, c3, f4, c4, tamSelec, selecHorizontal);
+
+							this.generarBarco(p1,p2,p3,p4, tamSelec, selecHorizontal);
+
 							bConRes[tamSelec]--;
 							barcosRestantes--;
+							
+							this.actualizarMatrices();
 							
 						} else {
 							
@@ -284,7 +362,7 @@ public class Juego {
 					
 				}
 				
-			}
+			
 
 			
 
@@ -293,10 +371,17 @@ public class Juego {
 		
 		
  		
-		
+	
 		
 		
 	}
+	
+	private class Posicion {
+		int fila;
+		int columna;
+	}
+
+
 	
 	
 }

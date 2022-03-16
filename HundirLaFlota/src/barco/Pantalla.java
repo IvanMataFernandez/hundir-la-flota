@@ -6,7 +6,6 @@ import java.awt.EventQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,9 +13,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
-import javax.swing.JRadioButton;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 
 public class Pantalla extends JFrame {
 
@@ -89,6 +86,9 @@ public class Pantalla extends JFrame {
 		return Pantalla.pantalla;
 	}
 	
+	
+	public JLabel getPanelTexto() {return this.texto;}
+	
 	/**
 	 * Create the frame.
 	 */
@@ -130,7 +130,8 @@ public class Pantalla extends JFrame {
 				cas.addMouseListener(Controlador.getCon());
 				cas2.addMouseListener(Controlador.getCon());
 				
-				
+				Juego.getJuego().addObserver(cas);
+				Juego.getJuego().addObserver(cas2);
 				
 				this.panelJugador.add(cas);
 				this.panelMaquina.add(cas2);

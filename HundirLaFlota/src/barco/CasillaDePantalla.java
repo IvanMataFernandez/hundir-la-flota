@@ -17,19 +17,7 @@ public class CasillaDePantalla extends JLabel implements Observer {
 	private boolean esDeJugador;
 	
 	
-	
-	/*
-	    Por defecto: Dark Gray
-	    Barco visible sin tocar: 
-	    Casilla sin tocar:
-	    Barco tocado:
-	    Agua tocada: 
-	  
-	  
-	  
-	  
-	  
-	 */
+
 	
 	public CasillaDePantalla (int pFila, int pCol, boolean pJ) {
 		this.fila = pFila;
@@ -50,9 +38,8 @@ public class CasillaDePantalla extends JLabel implements Observer {
 	public boolean esDeJ1() {return this.esDeJugador;}
 	
 	public void update(Observable o, Object c) {
-		
-		// ACTUALIZAR EL COLOR DE LA CASILLA AQUI!
-		
+		Color color = Juego.getJuego().calcularColor(fila, columna, esDeJugador);
+		if (color != null) {super.setBackground(color);}
 	}
 
 }

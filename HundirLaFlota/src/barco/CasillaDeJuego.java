@@ -1,5 +1,7 @@
 package barco;
 
+import java.awt.Color;
+
 public class CasillaDeJuego {
 
 	
@@ -30,5 +32,44 @@ public class CasillaDeJuego {
 		
 		
 	}
+	
+	public Color obtenerColorActualizado() {
+		
+		Color color;
+		
+		if (this.disparado) {
+			
+			
+			if (this.trozoDeBarco != null) {
+				color = Color.red;
+				
+			} else {
+				color = Color.blue;
+				
+				
+			}
+			
+		} else {
+			
+			// En este punto ya se asume que el jugador ha colacado un barco y debe actualizarlo
+			
+			if (this.trozoDeBarco != null) {
+				color = Color.green;
+				
+			} else {
+				color = Color.cyan;
+				
+			}
+			
+		}
+ 		
+		
+		
+		
+		return color;
+	}
+
+	
+	
 	
 }

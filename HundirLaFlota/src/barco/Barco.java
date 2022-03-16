@@ -23,18 +23,22 @@ public abstract class Barco {
 		
 		// ¿SE PUEDE CON JAVA8?
 		
-		int i = 0;
-		boolean hundido = false;
 		this.partes[pIDPosBarco] = true;
 
-		
+		boolean hundido = false;
+		int i = 0;
+
 		while (!hundido && i != partes.length) {
 			hundido = this.partes[i];
 			i++;
 		}
+		return hundido;		
+
 		
-		return hundido;
 		
 		
 	}
+	
+	
+
 }
