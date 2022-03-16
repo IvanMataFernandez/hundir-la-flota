@@ -14,6 +14,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Pantalla extends JFrame {
 
@@ -64,7 +66,7 @@ public class Pantalla extends JFrame {
 		         
 		         
 		         
-		         */
+		 */
 		
 		this.texto.setText("");
 		
@@ -121,8 +123,9 @@ public class Pantalla extends JFrame {
 
 			
 			for (int j = 0; j != 10; j++) {
-				CasillaDePantalla cas = new CasillaDePantalla(i,j);
-				CasillaDePantalla cas2 = new CasillaDePantalla(i,j);
+				CasillaDePantalla cas = new CasillaDePantalla(i,j,true);
+
+				CasillaDePantalla cas2 = new CasillaDePantalla(i,j,false);
 
 				this.panelJugador.add(cas);
 				this.panelMaquina.add(cas2);
@@ -150,6 +153,7 @@ public class Pantalla extends JFrame {
 	private JLabel getTitulo() {
 		if (titulo == null) {
 			titulo = new JLabel();
+	
 			titulo.setHorizontalAlignment(SwingConstants.CENTER);
 			titulo.setIcon(new ImageIcon(".\\materiales\\titulo.png"));
 		}
