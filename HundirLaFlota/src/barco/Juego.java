@@ -8,7 +8,6 @@ public class Juego {
 	private int filaSelec;
 	private int colSelec;
 	private boolean matrizJugadorSeleccionado;
-	
 	private boolean aceptaInput;
 	
 	
@@ -101,7 +100,7 @@ public class Juego {
 		// CAMBIAR ESE BOOLEAN AQUI.
 		
 		
-		Barco b = new Barco(tam+1);
+		Barco b = FabricaBarcos.getFab().generarBarco(tam);
 		ParteBarco p;
 		int min;
 		int max;

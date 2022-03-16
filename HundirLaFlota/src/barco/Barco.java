@@ -1,14 +1,14 @@
 package barco;
 
-public class Barco {
+public abstract class Barco {
 
 	
 	private boolean[] partes;
+	private String nombre;
 	
-	
-	public Barco(int pLong) {
+	public Barco(int pLong, String pNombre) {
 		this.partes = new boolean[pLong];
-		
+		this.nombre = pNombre;
 		// DEBEREIA ESTAR COMO FALSE, SI FALLA INBICIALIZAR A FALSE
 	}
 	
