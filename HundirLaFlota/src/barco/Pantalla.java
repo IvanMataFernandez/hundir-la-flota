@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -126,7 +127,11 @@ public class Pantalla extends JFrame {
 				CasillaDePantalla cas = new CasillaDePantalla(i,j,true);
 
 				CasillaDePantalla cas2 = new CasillaDePantalla(i,j,false);
-
+				cas.addMouseListener(Controlador.getCon());
+				cas2.addMouseListener(Controlador.getCon());
+				
+				
+				
 				this.panelJugador.add(cas);
 				this.panelMaquina.add(cas2);
 	
@@ -221,4 +226,9 @@ public class Pantalla extends JFrame {
 		}
 		return panelMaquina;
 	}
+	
+	
+
+	
+	
 }

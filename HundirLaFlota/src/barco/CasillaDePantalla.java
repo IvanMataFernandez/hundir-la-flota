@@ -16,6 +16,21 @@ public class CasillaDePantalla extends JLabel implements Observer {
 	private int columna;
 	private boolean esDeJugador;
 	
+	
+	
+	/*
+	    Por defecto: Dark Gray
+	    Barco visible sin tocar: 
+	    Casilla sin tocar:
+	    Barco tocado:
+	    Agua tocada: 
+	  
+	  
+	  
+	  
+	  
+	 */
+	
 	public CasillaDePantalla (int pFila, int pCol, boolean pJ) {
 		this.fila = pFila;
 		this.columna = pCol;
@@ -26,18 +41,13 @@ public class CasillaDePantalla extends JLabel implements Observer {
 		
 		
 		
-		this.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Juego.getJuego().cogerInput(fila, columna, esDeJugador);
-			}
-		});
+
 	}
 	
 	
 	public int getFila() {return this.fila;}
 	public int getCol() {return this.columna;}
-	
+	public boolean esDeJ1() {return this.esDeJugador;}
 	
 	public void update(Observable o, Object c) {
 		

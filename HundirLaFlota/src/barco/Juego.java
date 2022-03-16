@@ -29,13 +29,14 @@ public class Juego {
 		return Juego.juego;
 	}
 	
-	public void cogerInput(int pF, int pC, boolean pJ) {
+	public void cogerInput(CasillaDePantalla pCas) {
 		
 		if (this.aceptaInput) {
 			this.aceptaInput = false;
-			this.filaSelec = pF;
-			this.colSelec = pC;
-			this.matrizJugadorSeleccionado = pJ;
+			this.filaSelec = pCas.getFila();
+			this.colSelec = pCas.getCol();
+			this.matrizJugadorSeleccionado = pCas.esDeJ1();
+			
 		}
 		
 	//	System.out.println("La fila es: " +pF+" \nLa columna es: "+pC+"\n La matriz es del jugador: " +pJ);
