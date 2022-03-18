@@ -25,7 +25,7 @@ public class Pantalla extends JFrame {
 	private JLabel titulo;
 	private JPanel panelCentral;
 	private JPanel panelDelTexto;
-	private JLabel texto;
+	private PanelDeTexto texto;
 	private JPanel panelDeJuego;
 	private JPanel panelBotones;
 	private JPanel panelTableros;
@@ -52,34 +52,7 @@ public class Pantalla extends JFrame {
 	
 	
 	
-	public void escribir(String pTexto) throws InterruptedException {
-		
-		
-		/* Pre: String no null con el texto a poner
-		   Post: El campo de texto del frame ha sido sobrescrito por el valor de entrada
-		         escribiendo las letras una a una a un ritmo de 10 letras/segundo aprox. 
-		         
-		   
-		   NOTA: ESTE MÉTODO DEBERIA SER PRIVADO PARA ANTES DE ENTREGAR EL PROGRAMA FINAL.
-		         
-		         
-		         
-		 */
-		
-		this.texto.setText("");
-		
-		int i = 0;
-		
-		while (i != pTexto.length()) {
-			this.texto.setText(this.texto.getText() + pTexto.charAt(i));
-			this.texto.getText();
-			Thread.sleep(100);
-			
-			i++;
-		}
-		
-		
-	}
+
 
 	public static Pantalla getPantalla() {
 		if (Pantalla.pantalla == null) {Pantalla.pantalla = new Pantalla();}
@@ -142,8 +115,10 @@ public class Pantalla extends JFrame {
 	
 		this.panelJugador.setBorder(BorderFactory.createLineBorder(Color.pink));
 		this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
-		
+
+		TextoYAudio.getInstancia().darPanel(this.texto);
 		this.setVisible(true);
+
 	}
 
 	
@@ -181,9 +156,9 @@ public class Pantalla extends JFrame {
 		}
 		return panelDelTexto;
 	}
-	private JLabel getTexto() {
+	private PanelDeTexto getTexto() {
 		if (texto == null) {
-			texto = new JLabel("");
+			texto = new PanelDeTexto();  // Se ha cambiado este a la clase que extiende JLabel manualmente.
 			texto.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
 			
 		}

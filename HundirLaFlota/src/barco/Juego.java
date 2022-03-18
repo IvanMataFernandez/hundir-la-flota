@@ -24,7 +24,7 @@ public class Juego extends Observable {
 	
 	private Juego() {
 		
-		
+
 		this.aceptaInput = false;
 		this.matrizJugador = new CasillaDeJuego[10][10];
 		this.matrizMaquina = new CasillaDeJuego[10][10];
@@ -57,7 +57,7 @@ public class Juego extends Observable {
 	}
 	
 	
-	private void actualizarMatrices() {
+	private void actualizarCambios() {
 		super.setChanged();
 		super.notifyObservers();
 		
@@ -216,7 +216,7 @@ public class Juego extends Observable {
 	public void colocarBarcos() {
 		
 		// CREAR UNA TUPLA DE LOS 3 ELEMENTOS O MANTERNELOS COMO VARIABLES DE LA CLASE???
-		
+
 		
 		int barcosRestantes = 10;
 		int[] bConRes = new int[4]; // barcos concretos restantes (de 4,3,2 y 1)
@@ -245,7 +245,7 @@ public class Juego extends Observable {
 				valido = false;
 				while (!valido) {
 					// MSG MARCA POS.
-					
+
 					this.esperarInput();
 					valido = this.matrizJugadorSeleccionado;
 					
@@ -256,13 +256,15 @@ public class Juego extends Observable {
 							p1.fila = this.filaSelec;
 							p1.columna = this.colSelec;
 
-							
+							System.out.println("Debug: Primera casilla seleccionada");
+
 						} else {
 							p2.fila = this.filaSelec;
 							p2.columna = this.colSelec;
 
+							System.out.println("Debug: Segunda casilla seleccionada");
+
 						}
-						System.out.println(seleccionesHechas);
 						
 
 						seleccionesHechas++;
@@ -339,8 +341,9 @@ public class Juego extends Observable {
 							bConRes[tamSelec]--;
 							barcosRestantes--;
 							
-							this.actualizarMatrices();
-							
+							this.actualizarCambios();
+
+
 						} else {
 							
 							// MSG DE ERROR, EL BARCO SOLAPA CON OTRO (O ES ADYECENTE A OTRO)

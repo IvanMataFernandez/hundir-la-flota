@@ -1,27 +1,25 @@
 package barco;
 
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-public class Reproductor {
+public class Reproductor implements Observer {
 
 	
-	private static Reproductor rep;
 	private Clip clip;
 	
-	private Reproductor () {}
+	public Reproductor () {}
 		
 
-	public static Reproductor getReproductor() {
-		if (Reproductor.rep == null) {Reproductor.rep = new Reproductor();}
-		return Reproductor.rep;
-	}
+
 	
 	
-	public void sonar(String pS) {
+	private void sonar(String pS) {
 		
 		/* Pre: String no null. Dicha string indica el nombre de que
 		        archivo .wav (archivo de audio) guardado en la carpeta
@@ -36,24 +34,32 @@ public class Reproductor {
 		*/
 		
 		try {
-		
 			
-			if (this.clip == null || !this.clip.isRunning()) {
+			if (!pS.contentEquals("") && (this.clip == null || !this.clip.isRunning())) {
 				AudioInputStream audio = AudioSystem.getAudioInputStream(new File(".\\materiales\\"+pS+".wav"));
 				this.clip = AudioSystem.getClip();
 				this.clip.open(audio);
 				this.clip.start();
 			}
-			
 
-			
 		} catch (Exception e) {
-			System.out.println("ERROR NO SE ENCUENTRA AUDIO");
+			System.out.println("DEBUG: SI ESTÁS LEYENDO ESTO, SE ESTÁ INTENTANDO USAR AUDIO NO DISPONIBLE. AÑADE EL NOMBRE DEL ARCHIVO COMO AUDIO CON EXTENSION .WAV A LA CARPETA MATERIALES");
 		}
+
+		
+
 		
 
 		
 		
+	}
+
+
+
+
+
+	public void update(Observable o, Object arg) {
+		this.sonar(TextoYAudio.getInstancia().getAudio());
 	}
 	
 	

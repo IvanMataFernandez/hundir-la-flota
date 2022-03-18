@@ -15,6 +15,7 @@ public class Main {
 		 */
 		
 //		Pantalla.getPantalla().escribir("Coloca los barcos en el panel izq");
+		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
 		Juego.getJuego().colocarBarcos();
 	}
 }
