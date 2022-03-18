@@ -27,8 +27,11 @@ public class PanelDeTexto extends JLabel implements Observer {
 		         
 		 */
 		
-		
-		if (!this.getText().contentEquals("")) {
+		this.setText("");
+
+
+		if (!pTexto.contentEquals("")) {
+			
 			int i = 0;
 			
 			while (i != pTexto.length()) {
@@ -36,7 +39,7 @@ public class PanelDeTexto extends JLabel implements Observer {
 				this.getText();
 				
 				try {
-					Thread.sleep(100);
+					Thread.sleep(30);
 				} catch (InterruptedException e) {}
 				
 				i++;
