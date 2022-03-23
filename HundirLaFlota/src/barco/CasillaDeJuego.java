@@ -18,6 +18,8 @@ public class CasillaDeJuego {
 	
 	public boolean[] disparar() {
 		
+		// Post: Pos 0 <--> Si ha tocado barco
+		//       Pos 1 <--> Ha hundido
 		boolean res[] = new boolean[2]; // Por defecto en F
 		
 		this.disparado = true;

@@ -88,7 +88,7 @@ public class Pantalla extends JFrame {
 		
 		
 		for (int i = 1; i != 11; i++) {
-			char c = (char) (i + 96);
+			char c = (char) (i + 64);
 			this.panelJugador.add(new JLabel(Character.toString(c), SwingConstants.CENTER)); 
 			this.panelMaquina.add(new JLabel(Character.toString(c), SwingConstants.CENTER));
 		}

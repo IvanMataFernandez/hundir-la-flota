@@ -11,13 +11,17 @@ import javax.sound.sampled.Clip;
 
 public class Reproductor implements Observer {
 
-	
+	private static Reproductor r;
 	private Clip clip;
 	
-	public Reproductor () {}
+	private Reproductor () {}
 		
 
 
+	public static Reproductor getRep() {
+		if (Reproductor.r == null) {Reproductor.r = new Reproductor();}
+		return Reproductor.r;
+	}
 	
 	
 	private void sonar(String pS) {

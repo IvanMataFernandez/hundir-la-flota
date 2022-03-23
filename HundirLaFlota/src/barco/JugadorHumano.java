@@ -6,7 +6,6 @@ import vista.*;
 public class JugadorHumano extends Jugador {
 
 	private boolean aceptaInput;
-
 	private int filaSelec;
 	private int colSelec;
 	private boolean matrizJ1Selec;
@@ -14,16 +13,56 @@ public class JugadorHumano extends Jugador {
 
 	
 	public JugadorHumano () {
-
+		super(true);
+		
+	}
+	
+	
+	
+	public void disparar() throws ExcepcionFinDePartida {
+		boolean valido = false;
+		boolean res[];
+		JugadorIA jIA = Jugadores.getJugadores().getJugadorIA();
+		while (!valido) {
+			// MSG DONDE QUIERES PEGAR
+			this.esperarInput();
+			valido = !this.matrizJ1Selec;
+			
+			if (!valido) {
+				// MSG DE ERROR
+			} else {
+				valido = !jIA.haDisparadoAhi(filaSelec, colSelec);
+				
+				if (!valido) {
+					// MSG DE ERROR
+				} else {
+					res = jIA.dispararEn(filaSelec, colSelec);
+					
+					if (res[1]) {
+						jIA.hundeUnBarco();
+						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+					}
+					
+					valido = !res[0]; // Si ha tocado, valido false para repetir bucle.
+					
+					jIA.actualizarCambios();
+				}
+				
+			}
+			
+		}
+		
 		
 	}
 	
 
+	
+	
 
 	public void colocarBarcos() {
 	// CREAR UNA TUPLA DE LOS 3 ELEMENTOS O MANTERNELOS COMO VARIABLES DE LA CLASE???
 
-		
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		int barcosRestantes = 10;
 		int[] bConRes = new int[4]; // barcos concretos restantes (de 4,3,2 y 1)
 		int tamSelec; // tamaño del barco que se quiere poner
@@ -34,8 +73,9 @@ public class JugadorHumano extends Jugador {
 		Posicion p2 = null;
 		Posicion p3 = null;
 		Posicion p4 = null;
-
 		Posicion aux;
+		
+		textoYAudio.setTexto("Coloca los barcos, pincha en la casilla para poner");
 		
 		for (int i = 0; i != 4; i++) {
 			bConRes[i] = 4-i;
@@ -48,28 +88,30 @@ public class JugadorHumano extends Jugador {
 			
 			
 			while (seleccionesHechas != 2) {
+
 				valido = false;
 				while (!valido) {
-					// MSG MARCA POS.
+					textoYAudio.actualizarCambios();
 
 					this.esperarInput();
 					valido = this.matrizJ1Selec;
 					
 					if (!valido) {
-						// MSG DE ERROR DICIENDO QUE NO ES ESA LA TUYA
+						textoYAudio.setTexto("Has pinchado en el tablero del rival");
+						textoYAudio.setAudio("error");
+
 					} else {
 						if (seleccionesHechas == 0) {
 
 							p1 = new Posicion(this.filaSelec, this.colSelec);
+							textoYAudio.setTexto("Pinchado en: "+(this.filaSelec+1)+" "+(char)(65+this.colSelec));
 
-							System.out.println("Debug: Primera casilla seleccionada");
 
 						} else {
 							
 							p2 = new Posicion(this.filaSelec, this.colSelec);
 				
 
-							System.out.println("Debug: Segunda casilla seleccionada");
 
 						}
 						
@@ -148,25 +190,35 @@ public class JugadorHumano extends Jugador {
 							bConRes[tamSelec]--;
 							barcosRestantes--;
 							
+							textoYAudio.setTexto("Barco colocado, te quedan "+bConRes[tamSelec]+ " de ese tipo");
+							textoYAudio.setAudio("construccion");
+							
 							super.actualizarCambios();
 
 
 						} else {
-							
-							// MSG DE ERROR, EL BARCO SOLAPA CON OTRO (O ES ADYECENTE A OTRO)
+							textoYAudio.setTexto("Barco demasiado próximo a otro. No se ha colocado.");
+							textoYAudio.setAudio("error");
+
 						}
 						
 						
 					} else {
-						// MSG DE ERROR, NO QUEDAN BARCOS DE ESE TIPO
+						textoYAudio.setTexto("Has puesto ya todos los barcos de "+(tamSelec+1)+" espacios.");
+						textoYAudio.setAudio("error");
+
 					}
 				} else {
 					
 					if (tamSelec == -1) {
-						// MSG DE ERROR, BARCO INTENTANDO PONER EN DIAGONAL
+						textoYAudio.setTexto("No se permite poner en diagonal");
+						textoYAudio.setAudio("error");
+
 
 					} else {
-						// MSG DE ERROR, LONGITUD MAS DE 4
+						textoYAudio.setTexto("Barcos de hasta 4 casillas de longitud, no más.");
+						textoYAudio.setAudio("error");
+
 						
 					}
 					
@@ -175,7 +227,7 @@ public class JugadorHumano extends Jugador {
 			
 				
 				
-
+				textoYAudio.actualizarCambios();
 			
 
 		}

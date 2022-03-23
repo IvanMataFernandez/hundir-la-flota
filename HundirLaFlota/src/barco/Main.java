@@ -9,15 +9,36 @@ public class Main {
 	public static void main (String args[]) throws InterruptedException {
 		
 		
-		/*
-		 *  ESCRIBIR TEXTO POR PANTALLA NO SIGUE MODELO OBSERVADOR OBSERVABLE
-		 *   
-		 *  CREAR LAS CLASES OBSERVADOR Y OBSERVABLE PARA ELLOS.
-		 * 
-		 */
 		
-//		Pantalla.getPantalla().escribir("Coloca los barcos en el panel izq");
+	
+		Jugadores listaJugador = Jugadores.getJugadores();	
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
-		Jugadores.getJugadores().getJugadorHumano().colocarBarcos();
+		listaJugador.getJugadorHumano().colocarBarcos();
+		listaJugador.getJugadorIA().colocarBarcos();
+		
+		
+		try {
+			while (true) {
+				listaJugador.getJugadorActual().disparar();
+				listaJugador.cambiarJugador();
+				
+				
+			}
+
+			
+			
+		} catch (ExcepcionFinDePartida excepcion) {
+			
+			if (excepcion.ganoJ1()) {
+				// GANA J1!
+			} else {
+				// GANA IA!
+			}
+			
+		}
+		
+		
+		
+		
 	}
 }

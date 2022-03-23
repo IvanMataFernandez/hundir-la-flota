@@ -29,10 +29,10 @@ public class PanelDeTexto extends JLabel implements Observer {
 		         
 		 */
 		
-		this.setText("");
 
 
 		if (!pTexto.contentEquals("")) {
+			this.setText("");
 			
 			int i = 0;
 			

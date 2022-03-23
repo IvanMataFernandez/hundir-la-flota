@@ -23,7 +23,7 @@ public class TextoYAudio extends Observable {
 	
 	
 	
-	public void darPanel (PanelDeTexto p) { this.addObserver(p); this.addObserver(new Reproductor());}
+	public void darPanel (PanelDeTexto p) { this.addObserver(p); this.addObserver(Reproductor.getRep());}
 	// En el modelo Observer - Observable los update van 1 a 1 ejecutandose tras dar la orden de notifyObservers() empezando por
 	// el último Observer que se le dio al Observable. Para que toque audio mientras se escribe el texto se deben dar los observer
 	// en este orden: PanelDeTexto, Reproductor.

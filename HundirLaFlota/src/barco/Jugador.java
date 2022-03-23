@@ -5,15 +5,20 @@ import java.util.Observable;
 
 public abstract class Jugador extends Observable {
 
-	
+	private boolean esJ1;
 	private CasillaDeJuego[][] matriz;
 	private boolean[][] cambiosEnMatriz;
+	private int barcosConVida;
 	
-	public Jugador () {
-		
+	public Jugador (boolean pJ1) {
+		this.esJ1 = pJ1;
 		this.matriz = new CasillaDeJuego[10][10];
 		this.cambiosEnMatriz = new boolean[10][10];
+		this.barcosConVida = 10;
 	}
+	
+	
+	public abstract void disparar() throws ExcepcionFinDePartida;
 	
 	public void actualizarCambios() {
 		
@@ -39,6 +44,8 @@ public abstract class Jugador extends Observable {
 		int cte;
 		int min;
 		int max;
+		
+		
 		
 		if (pHor) {
 			cte = p1.getFila();
@@ -141,9 +148,31 @@ public abstract class Jugador extends Observable {
 		
 	}
 	
-	public CasillaDeJuego[][] getMatriz() {return this.matriz;}
+	public boolean haDisparadoAhi(int pF, int pC) {return this.matriz[pF][pC].disparado();}
 	
-	public boolean[][] getMatrizCambios() {return this.cambiosEnMatriz;}
+	
+	public boolean[] dispararEn(int pF, int pC) {
+		// AÑADIR BOOLEAN DESPUES PARA MISIL O BOMBA
+		
+		this.cambiosEnMatriz[pF][pC] = true;
+		return this.matriz[pF][pC].disparar();
+		
+		
+	}
+	
+	public void hundeUnBarco() {this.barcosConVida--;}
+	
+	public void acabaLaPartida() throws ExcepcionFinDePartida {
+		
+		if (this.barcosConVida == 0) {
+			throw new ExcepcionFinDePartida(!this.esJ1);
+		}
+		
+	}
+	
+//	public CasillaDeJuego[][] getMatriz() {return this.matriz;}
+	
+//	public boolean[][] getMatrizCambios() {return this.cambiosEnMatriz;}
 	
 	
 	
