@@ -1,8 +1,9 @@
 package barco;
 
+
 public abstract class Barco {
 
-	
+
 	private boolean[] partes;
 	private String nombre;
 	
@@ -13,7 +14,10 @@ public abstract class Barco {
 	}
 	
 	
+	// PARA IDEA COMO JAVA 8 AÑADIR ARRAYLIST DE CASILLADEJUEGO (NO ARRAY A SECAS PQ NO IMPLEMENTA COLLECTION)
+	// Y AL MARCAR EL BARCO COMO HUNDIDO FORZAR A TODAS LAS CASILLAS A MARCAR SU VALOR
 	
+	// PARA LOS MISILES TMB SIRVE.
 	
 	public boolean tocar(int pIDPosBarco) {
 		
@@ -21,17 +25,19 @@ public abstract class Barco {
 		// Post: boolean = el barco fue hundido tras tocar con esto.
 		
 		
-		// ¿SE PUEDE CON JAVA8?
+		
 		
 		this.partes[pIDPosBarco] = true;
 
-		boolean hundido = false;
+		boolean hundido = true;
 		int i = 0;
 
-		while (!hundido && i != partes.length) {
+		while (hundido && i != partes.length) {
 			hundido = this.partes[i];
 			i++;
 		}
+		
+		
 		return hundido;		
 
 		

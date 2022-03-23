@@ -8,6 +8,9 @@ public class CasillaDeJuego {
 	private ParteBarco trozoDeBarco;
 	private boolean disparado;
 	
+	
+	// PARA JA
+	
 	public CasillaDeJuego(ParteBarco pB) {
 		this.trozoDeBarco = pB;
 		this.disparado = false;
@@ -21,6 +24,7 @@ public class CasillaDeJuego {
 		// Post: Pos 0 <--> Si ha tocado barco
 		//       Pos 1 <--> Ha hundido
 		boolean res[] = new boolean[2]; // Por defecto en F
+		
 		
 		this.disparado = true;
 		

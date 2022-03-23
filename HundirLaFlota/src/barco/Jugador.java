@@ -27,9 +27,8 @@ public abstract class Jugador extends Observable {
 	}
 	
 	public Color calcularColor(int pF, int pC) {
-		boolean valor = this.cambiosEnMatriz[pF][pC];
 		
-		if (valor) {
+		if (this.cambiosEnMatriz[pF][pC]) {
 			this.cambiosEnMatriz[pF][pC] = false;
 			return this.matriz[pF][pC].obtenerColorActualizado();
 		} else {

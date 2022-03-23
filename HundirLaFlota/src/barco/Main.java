@@ -9,14 +9,14 @@ public class Main {
 	public static void main (String args[]) throws InterruptedException {
 		
 		
-		
+		// EL MAIN NO VA A IR DEL TODO HASTA QUE SE HAYA ACABADO EL PONER BARCOS DE IA
 	
 		Jugadores listaJugador = Jugadores.getJugadores();	
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
 		listaJugador.getJugadorHumano().colocarBarcos();
 		listaJugador.getJugadorIA().colocarBarcos();
 		
-		
+
 		try {
 			while (true) {
 				listaJugador.getJugadorActual().disparar();
@@ -36,6 +36,8 @@ public class Main {
 			}
 			
 		}
+		
+		Pantalla.getPantalla().dispose();
 		
 		
 		

@@ -23,34 +23,51 @@ public class JugadorHumano extends Jugador {
 		boolean valido = false;
 		boolean res[];
 		JugadorIA jIA = Jugadores.getJugadores().getJugadorIA();
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		textoYAudio.setTexto("Elige donde disparar");
 		while (!valido) {
-			// MSG DONDE QUIERES PEGAR
+			textoYAudio.actualizarCambios();
 			this.esperarInput();
 			valido = !this.matrizJ1Selec;
 			
 			if (!valido) {
-				// MSG DE ERROR
+				textoYAudio.setTexto("Pincha en el tablero del rival");
+
 			} else {
 				valido = !jIA.haDisparadoAhi(filaSelec, colSelec);
 				
 				if (!valido) {
-					// MSG DE ERROR
+					textoYAudio.setTexto("Ese espacio ya fue disparado");
+
 				} else {
 					res = jIA.dispararEn(filaSelec, colSelec);
 					
 					if (res[1]) {
 						jIA.hundeUnBarco();
 						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
+						 
+					} else if (res[0]) {
+						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
+					
+					} else {
+						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Agua");
+
 					}
 					
 					valido = !res[0]; // Si ha tocado, valido false para repetir bucle.
 					
 					jIA.actualizarCambios();
+
 				}
 				
 			}
 			
 		}
+		
+		textoYAudio.actualizarCambios();
+
+		
 		
 		
 	}
@@ -60,7 +77,6 @@ public class JugadorHumano extends Jugador {
 	
 
 	public void colocarBarcos() {
-	// CREAR UNA TUPLA DE LOS 3 ELEMENTOS O MANTERNELOS COMO VARIABLES DE LA CLASE???
 
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		int barcosRestantes = 10;

@@ -12,4 +12,5 @@ public class Posicion {
 	
 	public int getFila() {return this.fila;}
 	public int getCol() {return this.columna;}
+
 }
