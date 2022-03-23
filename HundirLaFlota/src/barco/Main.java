@@ -1,5 +1,7 @@
-package barco;
 
+
+package barco;
+import vista.*;
 public class Main {
 
 	
@@ -16,6 +18,6 @@ public class Main {
 		
 //		Pantalla.getPantalla().escribir("Coloca los barcos en el panel izq");
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
-		Juego.getJuego().colocarBarcos();
+		Jugadores.getJugadores().getJugadorHumano().colocarBarcos();
 	}
 }

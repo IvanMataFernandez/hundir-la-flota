@@ -1,6 +1,7 @@
-package barco;
+package controlador;
 
-
+import barco.*;
+import vista.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -25,7 +26,8 @@ public class Controlador implements MouseListener {
 		if (e.getSource() instanceof CasillaDePantalla) {
 
 			CasillaDePantalla cas = (CasillaDePantalla) e.getSource();
-			Juego.getJuego().cogerInput(cas);
+			Jugadores.getJugadores().getJugadorHumano().cogerInput(cas);
+			
 		}
 	
 	}

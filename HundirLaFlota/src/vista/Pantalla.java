@@ -1,5 +1,8 @@
-package barco;
+package vista;
 
+
+import barco.*;
+import controlador.Controlador;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -103,8 +106,8 @@ public class Pantalla extends JFrame {
 				cas.addMouseListener(Controlador.getCon());
 				cas2.addMouseListener(Controlador.getCon());
 				
-				Juego.getJuego().addObserver(cas);
-				Juego.getJuego().addObserver(cas2);
+				Jugadores.getJugadores().getJugadorHumano().addObserver(cas);
+				Jugadores.getJugadores().getJugadorIA().addObserver(cas2);
 				
 				this.panelJugador.add(cas);
 				this.panelMaquina.add(cas2);

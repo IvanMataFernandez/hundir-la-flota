@@ -1,5 +1,7 @@
 package barco;
 
+
+import vista.*;
 import java.util.Observable;
 
 public class TextoYAudio extends Observable {

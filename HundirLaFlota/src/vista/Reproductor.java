@@ -1,5 +1,6 @@
-package barco;
+package vista;
 
+import barco.*;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;

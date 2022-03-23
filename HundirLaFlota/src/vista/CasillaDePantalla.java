@@ -1,8 +1,8 @@
-package barco;
+package vista;
 
+import barco.*;
 import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.util.Observable;
 import java.util.Observer;
 
@@ -38,7 +38,8 @@ public class CasillaDePantalla extends JLabel implements Observer {
 	public boolean esDeJ1() {return this.esDeJugador;}
 	
 	public void update(Observable o, Object c) {
-		Color color = Juego.getJuego().calcularColor(fila, columna, esDeJugador);
+		Jugador j = (Jugador) o;
+		Color color = j.calcularColor(fila, columna);
 		if (color != null) {super.setBackground(color);}
 	}
 
