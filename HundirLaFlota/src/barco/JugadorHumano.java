@@ -46,12 +46,15 @@ public class JugadorHumano extends Jugador {
 						jIA.hundeUnBarco();
 						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
 						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
-						 
+						textoYAudio.setAudio("hundido");
+
 					} else if (res[0]) {
 						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
-					
+						textoYAudio.setAudio("tocado");
+
 					} else {
 						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Agua");
+						textoYAudio.setAudio("agua");
 
 					}
 					

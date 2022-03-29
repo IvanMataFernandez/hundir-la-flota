@@ -29,6 +29,8 @@ public class JugadorIA extends Jugador {
 
 		// FALTA ESTO
 		
+		super.completarTablero();
+		
 		
 	}
 	
@@ -205,7 +207,8 @@ public class JugadorIA extends Jugador {
 					jHu.hundeUnBarco();
 					jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
 					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco hundido");
-						
+					textoYAudio.setAudio("hundido");
+
 				} else {
 						
 					if (this.tocadoInicial == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
@@ -215,6 +218,7 @@ public class JugadorIA extends Jugador {
 				}
 						
 				textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco tocado");
+				textoYAudio.setAudio("tocado");
 
 				}
 					
@@ -228,7 +232,7 @@ public class JugadorIA extends Jugador {
 				
 				encadenar = false; //Fallo, fin del bucle
 				textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Agua");
-
+				textoYAudio.setAudio("agua");
 				
 				
 				
@@ -240,7 +244,7 @@ public class JugadorIA extends Jugador {
 			textoYAudio.actualizarCambios();
 
 
-			this.esperar(1500);
+			this.esperar(1600);
 
 			
 

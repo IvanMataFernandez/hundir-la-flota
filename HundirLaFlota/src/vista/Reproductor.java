@@ -11,6 +11,21 @@ import javax.sound.sampled.Clip;
 
 public class Reproductor implements Observer {
 
+	
+	
+	/*   ARCHIVOS .WAV USADOS AHORA (SE PUEDEN CAMBIAR POR OTROS CON EL MISMO NOMBRE PARA CAMBIAR EL EFECTO):
+	     - agua.wav ----------> Sonido cuando se da a una casilla sin barco
+	     - construccion.wav --> Sonido que suena cuando se pone un barco
+	     - error.wav ---------> Sonido que suena cuando se intenta hacer algo no permitido
+	     - hundido.wav -------> Sonido que suena cuando se hunde un barco
+	     - tocado.wav --------> Sonido que suena cuando se toca un barco (y no se hunde)
+	  
+	  
+	  
+	  
+	 */
+	
+	
 	private static Reproductor r;
 	private Clip clip;
 	

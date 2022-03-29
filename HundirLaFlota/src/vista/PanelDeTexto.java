@@ -41,7 +41,7 @@ public class PanelDeTexto extends JLabel implements Observer {
 				this.getText();
 				
 				try {
-					Thread.sleep(12);
+					Thread.sleep(15);
 				} catch (InterruptedException e) {}
 				
 				i++;
