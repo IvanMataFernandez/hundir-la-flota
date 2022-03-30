@@ -31,8 +31,8 @@ public class Jugadores {
 	}
 	
 	public void jugadoresColocanBarcos() {
-		this.j1.colocarBarcos();
 		this.j2.colocarBarcos();
+		this.j1.colocarBarcos();
 	}
 	
 	public void cambiarJugador() {this.apuntaAJ1 = !this.apuntaAJ1;}

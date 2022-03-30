@@ -15,6 +15,8 @@ public class Main {
 		
 		/* STRATEGY --> BOMBAS / MISIL
 		 * STATE -----> ESCUDO / NO ESCUDO
+		 * 
+		 * MIARAR EL DE COLOCAR IA
 		  
 		 
 		  
