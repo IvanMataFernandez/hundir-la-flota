@@ -18,12 +18,21 @@ public class Jugadores {
 		return Jugadores.lista;
 	}
 	
-	public Jugador getJugadorActual() {
+	private Jugador getJugadorActual() {
 		if (this.apuntaAJ1) {
 			return this.j1;
 		} else {
 			return this.j2;
 		}
+	}
+	
+	public void jugadorActualDispara() throws ExcepcionFinDePartida {
+		this.getJugadorActual().disparar();
+	}
+	
+	public void jugadoresColocanBarcos() {
+		this.j1.colocarBarcos();
+		this.j2.colocarBarcos();
 	}
 	
 	public void cambiarJugador() {this.apuntaAJ1 = !this.apuntaAJ1;}

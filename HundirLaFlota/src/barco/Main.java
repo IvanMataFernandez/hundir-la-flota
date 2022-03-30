@@ -22,13 +22,12 @@ public class Main {
 	
 		Jugadores listaJugador = Jugadores.getJugadores();	
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
-		listaJugador.getJugadorHumano().colocarBarcos();
-		listaJugador.getJugadorIA().colocarBarcos();
+		listaJugador.jugadoresColocanBarcos();
 		
 
 		try {
 			while (true) {
-				listaJugador.getJugadorActual().disparar();
+				listaJugador.jugadorActualDispara();
 				listaJugador.cambiarJugador();
 				
 				
