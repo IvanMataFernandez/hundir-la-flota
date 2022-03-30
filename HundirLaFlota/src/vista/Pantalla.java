@@ -116,8 +116,8 @@ public class Pantalla extends JFrame {
 			}
 		}
 	
-		this.panelJugador.setBorder(BorderFactory.createLineBorder(Color.pink));
-		this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
+	//	this.panelJugador.setBorder(BorderFactory.createLineBorder(Color.pink));
+	//	this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
 
 		TextoYAudio.getInstancia().darPanel(this.texto);
 		this.setVisible(true);
