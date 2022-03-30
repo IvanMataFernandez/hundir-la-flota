@@ -79,7 +79,8 @@ public class Reproductor implements Observer {
 
 
 	public void update(Observable o, Object arg) {
-		this.sonar(TextoYAudio.getInstancia().getAudio());
+		String[] array = (String[]) arg;
+		this.sonar(array[1]);
 	}
 	
 	

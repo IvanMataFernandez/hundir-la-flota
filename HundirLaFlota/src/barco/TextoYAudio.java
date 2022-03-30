@@ -28,12 +28,15 @@ public class TextoYAudio extends Observable {
 	// el último Observer que se le dio al Observable. Para que toque audio mientras se escribe el texto se deben dar los observer
 	// en este orden: PanelDeTexto, Reproductor.
 	
-	public String getAudio() {return this.audioAReproducir;}
-	public String getTexto() {return this.textoAEscribir;}
 
 	public void actualizarCambios() {
+		
+		String[] array = new String[2];
+		array[0] = this.textoAEscribir;
+		array[1] = this.audioAReproducir;
+		
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers(array);
 		this.textoAEscribir = "";
 		this.audioAReproducir = "";
 	}

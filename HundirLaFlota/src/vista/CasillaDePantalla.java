@@ -38,9 +38,10 @@ public class CasillaDePantalla extends JLabel implements Observer {
 	public boolean esDeJ1() {return this.esDeJugador;}
 	
 	public void update(Observable o, Object c) {
-		Jugador j = (Jugador) o;
-		Color color = j.calcularColor(fila, columna);
-		if (color != null) {super.setBackground(color);}
+		Color[][] array = (Color[][]) c;
+		
+		
+		if (array[this.fila][this.columna] != null) {super.setBackground(array[fila][columna]);}
 	}
 
 }

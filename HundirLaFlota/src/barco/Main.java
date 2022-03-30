@@ -10,6 +10,15 @@ public class Main {
 		
 		
 		// EL MAIN NO VA A IR DEL TODO HASTA QUE SE HAYA ACABADO EL PONER BARCOS DE IA
+		
+		
+		
+		/* STRATEGY --> BOMBAS / MISIL
+		 * STATE -----> ESCUDO / NO ESCUDO
+		  
+		 
+		  
+		 */
 	
 		Jugadores listaJugador = Jugadores.getJugadores();	
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA

@@ -7,13 +7,13 @@ public abstract class Jugador extends Observable {
 
 	private boolean esJ1;
 	private CasillaDeJuego[][] matriz;
-	private boolean[][] cambiosEnMatriz;
+	private Color[][] cambiosEnMatriz;
 	private int barcosConVida;
 	
 	public Jugador (boolean pJ1) {
 		this.esJ1 = pJ1;
 		this.matriz = new CasillaDeJuego[10][10];
-		this.cambiosEnMatriz = new boolean[10][10];
+		this.cambiosEnMatriz = new Color[10][10];
 		this.barcosConVida = 10;
 	}
 	
@@ -23,10 +23,12 @@ public abstract class Jugador extends Observable {
 	public void actualizarCambios() {
 		
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers(this.cambiosEnMatriz);
+		
+		this.cambiosEnMatriz = new Color[10][10];
 	}
 	
-	public Color calcularColor(int pF, int pC) {
+/*	public Color calcularColor(int pF, int pC) {
 		
 		if (this.cambiosEnMatriz[pF][pC]) {
 			this.cambiosEnMatriz[pF][pC] = false;
@@ -34,7 +36,7 @@ public abstract class Jugador extends Observable {
 		} else {
 			return null;
 		}
-	}	
+	}	*/
 	public abstract void colocarBarcos();
 	
 	protected boolean posibleColocar(Posicion p1, Posicion p2, boolean pHor) {
@@ -96,7 +98,7 @@ public abstract class Jugador extends Observable {
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
 				matriz[cte][min] = new CasillaDeJuego(p);
-				cambiosEnMatriz[cte][min] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
+				cambiosEnMatriz[cte][min] = matriz[cte][min].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
 				min++;
 			}
@@ -112,7 +114,7 @@ public abstract class Jugador extends Observable {
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
 				matriz[min][cte] = new CasillaDeJuego(p);
-				cambiosEnMatriz[min][cte] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
+				cambiosEnMatriz[min][cte] = matriz[min][cte].obtenerColorActualizado();; // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
 				min++;
 			}
@@ -126,7 +128,7 @@ public abstract class Jugador extends Observable {
 				
 				if (matriz[f][c] == null) {
 					matriz[f][c] = new CasillaDeJuego(null); // No barco asignado a casilla
-					cambiosEnMatriz[f][c] = true; // SE DEBE ACTUALIZAR EL COLOR DESPUES
+					cambiosEnMatriz[f][c] = matriz[f][c].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
 
 				}
 			}
@@ -139,8 +141,9 @@ public abstract class Jugador extends Observable {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (this.matriz[i][j] == null) {
-					this.cambiosEnMatriz[i][j] = true;
 					this.matriz[i][j] = new CasillaDeJuego(null);
+					this.cambiosEnMatriz[i][j] = matriz[i][j].obtenerColorActualizado();;
+
 				}
 			}
 		}
@@ -152,9 +155,9 @@ public abstract class Jugador extends Observable {
 	
 	public boolean[] dispararEn(int pF, int pC) {
 		// AÑADIR BOOLEAN DESPUES PARA MISIL O BOMBA
-		
-		this.cambiosEnMatriz[pF][pC] = true;
-		return this.matriz[pF][pC].disparar();
+		boolean[] res = this.matriz[pF][pC].disparar();
+		this.cambiosEnMatriz[pF][pC] = this.matriz[pF][pC].obtenerColorActualizado();
+		return res;
 		
 		
 	}

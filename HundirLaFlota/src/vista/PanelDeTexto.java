@@ -14,7 +14,9 @@ public class PanelDeTexto extends JLabel implements Observer {
 
 
 	public void update(Observable o, Object arg) {
-		this.escribir(TextoYAudio.getInstancia().getTexto());
+		String[] array = (String[]) arg;
+		this.escribir(array[0]);
+		
 	}
 	
 	
