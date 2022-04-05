@@ -40,7 +40,7 @@ public class JugadorIA extends Jugador {
 	   	 boolean generado = false;
 	   	 Posicion p1 = null;
 	   	 Posicion p2 = null;
-	   	 Posicion aux = null;
+	   	 Posicion aux;
 	   	 ArrayList<Integer> arrayDirecciones = null;
 	   	 int posicion;
 	   	 int direccion;
@@ -60,6 +60,7 @@ public class JugadorIA extends Jugador {
 	   				 p1 = new Posicion(f1, c1);	 
 	   				 arrayDirecciones = direccionesPosibles(p1, tamSelec);
 	   				 porColocar = true;
+	   				 aux = null;
 	   				
 	   				 while (porColocar) {
 	   					 posicion = generador.nextInt(arrayDirecciones.size());  //Decide si el barco se podnrá hacia N,S,E,O
@@ -86,9 +87,11 @@ public class JugadorIA extends Jugador {
 	   					}
 	   					
 	   					 if (p1.getFila() > p2.getFila() || p1.getCol() > p2.getCol()) {
+	   						 // CAMBIAR LOS PUNTEROS PARA QUE P1 TENGA EL VALOR DE MÁS ESQUINA SUPERIOR IZQUIERDA
 	   						 aux = p1;
 	   						 p1 = p2;
 	   						 p2 = aux;
+	
 	   					 }
 		   				
 
@@ -110,6 +113,16 @@ public class JugadorIA extends Jugador {
 	   						 arrayDirecciones.remove(posicion);
 	   						 
 	   						 if (arrayDirecciones.isEmpty()) {porColocar = false; }
+	   						 else if (aux != null ){ 
+	   							 
+	   							 // TRAS CAMBIAR LOS PUNTEROS, VOLVER A PONER P1
+	   							 // COMO EL PUNTERO BASE DESDE DONDE SE QUIERE COLOCAR EL BARCO
+	   							 
+	   							 p2 = p1;
+	   							 p1 = aux;
+	   							 aux = null;
+	   							 
+	   						 }
 	   						 
 	   					 }
 
@@ -386,3 +399,4 @@ public class JugadorIA extends Jugador {
 	
 	
 }
+

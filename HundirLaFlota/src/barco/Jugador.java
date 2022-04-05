@@ -171,6 +171,9 @@ public abstract class Jugador extends Observable {
 				}
 			}
 		}
+		
+		
+
 	}
 	
 	
