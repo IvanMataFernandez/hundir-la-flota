@@ -32,113 +32,105 @@ public class JugadorIA extends Jugador {
 		
 	   	 int[] bConRes = new int[4]; // barcos concretos restantes (de 4,3,2 y 1)
 	   	 int tamSelec = 3; // tamaño del barco que se quiere poner
+	   	 int f1;
+	   	 int c1;
 	   	 boolean valido;
 	   	 boolean selecHorizontal=false;
-	   	 boolean encontrado=false;
+	   	 boolean porColocar;
 	   	 boolean generado = false;
 	   	 Posicion p1 = null;
 	   	 Posicion p2 = null;
-	   	 Posicion p3 = null;
-	   	 Posicion p4 = null;
-	   	 ArrayList<Integer> arrayDirecciones = new ArrayList<Integer>();
+	   	 Posicion aux = null;
+	   	 ArrayList<Integer> arrayDirecciones = null;
+	   	 int posicion;
 	   	 int direccion;
 	   	 
 	   	 for (int i = 0; i != 4; i++) {
 	   		 bConRes[i] = 4-i;
 	   	 }
 
-	   			 while (tamSelec >= 0) {
-	   				 if (bConRes[tamSelec] != 0) {
-	   					 generado = false;
-	   					 valido = false;
-	   					 while (!generado) {
-	   						int f1 = generador.nextInt(10);
-	   					 	int c1 = generador.nextInt(10);
+	   	 while (tamSelec >= 0) {
+	   		 if (bConRes[tamSelec] != 0) {
+	   			 generado = false;
+	   			 valido = false;
+	   			
+	   			 while (!generado) {
+	   				 f1 = generador.nextInt(10);
+	   				 c1 = generador.nextInt(10);			 
+	   				 p1 = new Posicion(f1, c1);	 
+	   				 arrayDirecciones = direccionesPosibles(p1, tamSelec);
+	   				 porColocar = true;
+	   				
+	   				 while (porColocar) {
+	   					 posicion = generador.nextInt(arrayDirecciones.size());  //Decide si el barco se podnrá hacia N,S,E,O
+	   					 direccion = arrayDirecciones.get(posicion);
 	   						 
-	   						 p1 = new Posicion(f1, c1);
-	   						 
-	   						 
-	   						 arrayDirecciones = direccionesPosibles(f1, c1, tamSelec);
-	   						 
-	   						 System.out.println("Ha creado bien el array");
-	   						 
-	   						 encontrado = false;
-	   						 while (!encontrado) {
-	   							 int longArray = arrayDirecciones.size();
-	   							 direccion = generador.nextInt(longArray);  //Decide si el barco se podnrá hacia N,S,E,O
-	   							 direccion = arrayDirecciones.get(direccion);
-	   						 
-	   							 // PUEDE SER SWITCH
-	   							 
-	   							 if (direccion == 0) { //NORTE
-	   								 p2 = new Posicion(f1-tamSelec, c1);
-	   								 encontrado=true;
-	   								 selecHorizontal = false;
-	   							 }
-	   							 else if (direccion == 1) { //SUR
-	   								 p2 = new Posicion(f1+tamSelec, c1);
-	   								 encontrado=true;
-	   								 selecHorizontal = false;
-	   							 }
-	   							 else if (direccion == 2) { //ESTE
-	   								 p2 = new Posicion(f1, c1-tamSelec);
-	   								 encontrado=true;
-	   								 selecHorizontal = true;
-	   							 }
-	   							 else if (direccion == 3) { //OESTE
-	   								 p2 = new Posicion(f1, c1+tamSelec);
-	   								 encontrado=true;
-	   								 selecHorizontal = true;
-	   							 }
-	   							 /*else if (direccion == 100) { //Pos Vacia
-	   								 encontrado=false;
-	   							 } */
-	   							 System.out.println("Posicion 1:" + p1.getCol() + " " + p1.getFila() + "  	Posición 2: " + p2.getCol() + " " + p2.getFila());
-	   						 }
-	   						 
-	   						 
-	   							 if (selecHorizontal) { // BARCO EN HORINZOTAL
-	   				 
-	   								 p3 = new Posicion(Math.max(0, p1.getFila()-1),Math.max(0, p1.getCol()-1));    //Esto es para coger las esquinas diagonales +1 para poner el agua
-	   										 
-	   								 p4 = new Posicion( Math.min(9, p1.getFila()+1),Math.min(9, p2.getCol()+1));    //Esto es para coger las esquinas diagonales +1 para poner el agua
-	   									 
-	   									 
-	   							 } else { // BARCO EN VERTICAL
+	   					 switch (direccion) {
+	   						case 0: //NORTE
+  								 p2 = new Posicion(f1-tamSelec, c1);
+  								 selecHorizontal = false;
+	   							break;
+	   						case 1: //SUR
+  								 p2 = new Posicion(f1+tamSelec, c1);
+   								 selecHorizontal = false;
+	   							break;
+	   						case 2://ESTE
+  								 p2 = new Posicion(f1, c1-tamSelec);
+  								 selecHorizontal = true;
+	   							break;
+	   						case 3: //OESTE
+  								 p2 = new Posicion(f1, c1+tamSelec);
+  								 selecHorizontal = true;
+	   						default:
+	   							
+	   					}
+	   					
+	   					 if (p1.getFila() > p2.getFila() || p1.getCol() > p2.getCol()) {
+	   						 aux = p1;
+	   						 p1 = p2;
+	   						 p2 = aux;
+	   					 }
+		   				
 
-	   								 p3 = new Posicion(Math.max(0, p1.getFila()-1), Math.max(0, p1.getCol()-1) );    //Esto es para coger las esquinas diagonales +1 para poner el agua
-	   									 
-	   								 p4 = new Posicion( Math.min(9, p2.getFila()+1), Math.min(9, p2.getCol()+1) );    //Esto es para coger las esquinas diagonales +1 para poner el agua    
-	   							 }
-	   							 
-	   							 valido = super.posibleColocar(p1, p2, selecHorizontal); //Mira que no choque con otros barcos
-	   							 
-	   							 
-	   							 if (valido) { // Si se puede...
+		   				
+		   				valido = super.posibleColocar(p1, p2, selecHorizontal); //Mira que no choque con otros barcos
+							 
+							 
+		   				if (valido) { // Si se puede...
 
-	   								 super.generarBarco(p1, p2, p3, p4, tamSelec, selecHorizontal); //Pone el barco
+		   					super.generarBarco(p1, p2, tamSelec, selecHorizontal); //Pone el barco
 
-	   								 bConRes[tamSelec]--;
+		   					bConRes[tamSelec]--;
 	   								 
-	   								 super.actualizarCambios();
-	   								 generado=true;
+		   					super.actualizarCambios();
+		   					generado = true;
+		   					porColocar = false;
 	   								 
-	   								 System.out.println("Barco de tamaño " + tamSelec + " puesto");
-	   							 }
-	   							 
-	   						 }
-	   					 
-	   				 } else { tamSelec = tamSelec-1;
-	   				 System.out.println("-----------Voy a poner barcos de tamaño" + tamSelec);
+	   					 } else {
+	   						 arrayDirecciones.remove(posicion);
+	   						 
+	   						 if (arrayDirecciones.isEmpty()) {porColocar = false; }
+	   						 
+	   					 }
+
 	   				 }
-	   	 }
-	   			 
-	   	super.completarTablero();	 
-	   	super.actualizarCambios();
+	   						 
+		 
+	   			}
+	   					 
+	   		} else {tamSelec = tamSelec-1;}
+
+	   	}
+	   	 
+	   	 super.completarTablero();	 
+	   	 super.actualizarCambios();
 	    
 	}
-	private ArrayList<Integer> direccionesPosibles(int f1, int c1, int tamSelec) {
+	
+	private ArrayList<Integer> direccionesPosibles(Posicion p1, int tamSelec) {
 	    ArrayList<Integer> arrayDireccionesAux = new ArrayList<Integer>(); //Creamos el array con 4 posiciones
+	    int f1 = p1.getFila();
+	    int c1 = p1.getCol();
 	    
 	   	 //Puede Norte?    Si puede norte 100-->0
 	   	 if (f1-tamSelec > -1) {
@@ -337,9 +329,10 @@ public class JugadorIA extends Jugador {
 					}
 						
 					jHu.hundeUnBarco();
-					jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
 					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco hundido");
 					textoYAudio.setAudio("hundido");
+					jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
+
 
 				} else {
 						

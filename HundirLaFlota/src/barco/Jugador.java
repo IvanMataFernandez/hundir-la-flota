@@ -39,6 +39,11 @@ public abstract class Jugador extends Observable {
 	}	*/
 	public abstract void colocarBarcos();
 	
+	
+	
+
+	
+	
 	protected boolean posibleColocar(Posicion p1, Posicion p2, boolean pHor) {
 
 		boolean puede = true;
@@ -78,16 +83,49 @@ public abstract class Jugador extends Observable {
 		
 	}
 	
+
 	
-	protected void generarBarco(Posicion p1, Posicion p2, Posicion p3, Posicion p4, int tam, boolean pHor) {
+	protected void generarBarco(Posicion p1, Posicion p2, int tam, boolean pHor) {
+		
+		
+	
+		
+		
 		Barco b = FabricaBarcos.getFab().generarBarco(tam);
 		ParteBarco p;
 		int min;
 		int max;
 		int cte;
-	
+		Posicion p3 = null;
+		Posicion p4 = null;
+
+
 		int cont = 0;
+
+	
+		// CALCULAR EXTREMOS PARA AGUA
 		
+		if (pHor) { // BARCO EN HORINZOTAL
+			
+			p3 = new Posicion(Math.max(0, p1.getFila()-1),Math.max(0, p1.getCol()-1));
+					
+
+				
+			p4 = new Posicion( Math.min(9, p1.getFila()+1),Math.min(9, p2.getCol()+1));
+
+			
+		} else { // BARCO EN VERTICAL
+
+			p3 = new Posicion(Math.max(0, p1.getFila()-1), Math.max(0, p1.getCol()-1) );
+			
+			p4 = new Posicion( Math.min(9, p2.getFila()+1), Math.min(9, p2.getCol()+1) );
+
+	
+		}
+		
+	
+
+		// GENERAR EL BARCO
 
 		
 		if (pHor) {
@@ -97,7 +135,7 @@ public abstract class Jugador extends Observable {
 			
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
-				matriz[cte][min] = new CasillaDeJuego(p);
+				matriz[cte][min] = new CasillaDeJuego(p, this.esJ1);
 				cambiosEnMatriz[cte][min] = matriz[cte][min].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
 				min++;
@@ -113,7 +151,7 @@ public abstract class Jugador extends Observable {
 			
 			while (min <= max) {
 				p = new ParteBarco(cont, b);
-				matriz[min][cte] = new CasillaDeJuego(p);
+				matriz[min][cte] = new CasillaDeJuego(p, this.esJ1);
 				cambiosEnMatriz[min][cte] = matriz[min][cte].obtenerColorActualizado();; // SE DEBE ACTUALIZAR EL COLOR DESPUES
 				cont++;
 				min++;
@@ -127,7 +165,7 @@ public abstract class Jugador extends Observable {
 			for (int c = p3.getCol(); c <= p4.getCol(); c++) {
 				
 				if (matriz[f][c] == null) {
-					matriz[f][c] = new CasillaDeJuego(null); // No barco asignado a casilla
+					matriz[f][c] = new CasillaDeJuego(null, this.esJ1); // No barco asignado a casilla
 					cambiosEnMatriz[f][c] = matriz[f][c].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
 
 				}
@@ -141,7 +179,7 @@ public abstract class Jugador extends Observable {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (this.matriz[i][j] == null) {
-					this.matriz[i][j] = new CasillaDeJuego(null);
+					this.matriz[i][j] = new CasillaDeJuego(null, this.esJ1);
 					this.cambiosEnMatriz[i][j] = matriz[i][j].obtenerColorActualizado();;
 
 				}
@@ -167,6 +205,8 @@ public abstract class Jugador extends Observable {
 	public void acabaLaPartida() throws ExcepcionFinDePartida {
 		
 		if (this.barcosConVida == 0) {
+			this.actualizarCambios();
+			TextoYAudio.getInstancia().actualizarCambios();
 			throw new ExcepcionFinDePartida(!this.esJ1);
 		}
 		

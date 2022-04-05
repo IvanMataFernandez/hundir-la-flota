@@ -30,6 +30,8 @@ public class Jugadores {
 		this.getJugadorActual().disparar();
 	}
 	
+
+	
 	public void jugadoresColocanBarcos() {
 		this.j2.colocarBarcos();
 		this.j1.colocarBarcos();

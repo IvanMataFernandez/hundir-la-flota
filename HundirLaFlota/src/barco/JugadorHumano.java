@@ -44,10 +44,13 @@ public class JugadorHumano extends Jugador {
 					
 					if (res[1]) {
 						jIA.hundeUnBarco();
-						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+
 						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
 						textoYAudio.setAudio("hundido");
-
+						
+						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+						
+						
 					} else if (res[0]) {
 						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
 						textoYAudio.setAudio("tocado");
@@ -90,8 +93,6 @@ public class JugadorHumano extends Jugador {
 		boolean selecHorizontal=false;
 		Posicion p1 = null;
 		Posicion p2 = null;
-		Posicion p3 = null;
-		Posicion p4 = null;
 		Posicion aux;
 		
 		textoYAudio.setTexto("Coloca los barcos, pincha en la casilla para poner");
@@ -176,24 +177,9 @@ public class JugadorHumano extends Jugador {
 				if (tamSelec >= 0 && tamSelec <=3) {
 					if (bConRes[tamSelec] != 0) {
 						
-						if (selecHorizontal) { // BARCO EN HORINZOTAL
-		
-							p3 = new Posicion(Math.max(0, p1.getFila()-1),Math.max(0, p1.getCol()-1));
-									
-		
-								
-							p4 = new Posicion( Math.min(9, p1.getFila()+1),Math.min(9, p2.getCol()+1));
-				
-							
-						} else { // BARCO EN VERTICAL
+						
+						
 
-							p3 = new Posicion(Math.max(0, p1.getFila()-1), Math.max(0, p1.getCol()-1) );
-							
-							p4 = new Posicion( Math.min(9, p2.getFila()+1), Math.min(9, p2.getCol()+1) );
-		
-				
-							
-						}
 						
 						
 						// CALCULAR
@@ -204,7 +190,7 @@ public class JugadorHumano extends Jugador {
 						
 						if (valido) {
 
-							super.generarBarco(p1, p2, p3, p4, tamSelec, selecHorizontal);
+							super.generarBarco(p1, p2, tamSelec, selecHorizontal);
 
 							bConRes[tamSelec]--;
 							barcosRestantes--;

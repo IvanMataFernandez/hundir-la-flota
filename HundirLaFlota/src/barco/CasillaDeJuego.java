@@ -7,13 +7,15 @@ public class CasillaDeJuego {
 	
 	private ParteBarco trozoDeBarco;
 	private boolean disparado;
+	private boolean esDeHumano;
 	
 	
 	// PARA JA
 	
-	public CasillaDeJuego(ParteBarco pB) {
+	public CasillaDeJuego(ParteBarco pB, boolean pJ1) {
 		this.trozoDeBarco = pB;
 		this.disparado = false;
+		this.esDeHumano = pJ1;
 	}
 	
 	
@@ -43,6 +45,9 @@ public class CasillaDeJuego {
 		
 		Color color;
 		
+		
+
+		
 		if (this.disparado) {
 			
 			
@@ -55,9 +60,8 @@ public class CasillaDeJuego {
 				
 			}
 			
-		} else {
+		} else if (this.esDeHumano) {
 			
-			// En este punto ya se asume que el jugador ha colacado un barco y debe actualizarlo
 			
 			if (this.trozoDeBarco != null) {
 				color = Color.green;
@@ -66,6 +70,13 @@ public class CasillaDeJuego {
 				color = Color.cyan;
 				
 			}
+			
+		} else  {
+			
+			
+			
+			
+				color = Color.cyan;
 			
 		}
  		

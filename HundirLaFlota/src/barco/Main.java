@@ -38,6 +38,8 @@ public class Main {
 			
 			
 		} catch (ExcepcionFinDePartida excepcion) {
+
+
 			
 			if (excepcion.ganoJ1()) {
 				// GANA J1!
@@ -46,6 +48,10 @@ public class Main {
 			}
 			
 		}
+		
+		try {
+			Thread.sleep(2000);
+		} catch (Exception e) {}
 		
 		Pantalla.getPantalla().dispose();
 		
