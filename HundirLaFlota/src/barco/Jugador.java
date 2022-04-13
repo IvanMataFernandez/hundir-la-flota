@@ -9,12 +9,14 @@ public abstract class Jugador extends Observable {
 	private CasillaDeJuego[][] matriz;
 	private Color[][] cambiosEnMatriz;
 	private int barcosConVida;
+	private Armamento equipadoCon;
 	
 	public Jugador (boolean pJ1) {
 		this.esJ1 = pJ1;
 		this.matriz = new CasillaDeJuego[10][10];
 		this.cambiosEnMatriz = new Color[10][10];
 		this.barcosConVida = 10;
+		this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);
 	}
 	
 	
@@ -28,15 +30,7 @@ public abstract class Jugador extends Observable {
 		this.cambiosEnMatriz = new Color[10][10];
 	}
 	
-/*	public Color calcularColor(int pF, int pC) {
-		
-		if (this.cambiosEnMatriz[pF][pC]) {
-			this.cambiosEnMatriz[pF][pC] = false;
-			return this.matriz[pF][pC].obtenerColorActualizado();
-		} else {
-			return null;
-		}
-	}	*/
+
 	public abstract void colocarBarcos();
 	
 	
@@ -46,6 +40,18 @@ public abstract class Jugador extends Observable {
 	
 	protected boolean posibleColocar(Posicion p1, Posicion p2, boolean pHor) {
 
+		
+		/* Pre: Las dos posiciones que marcan las esquinas del barco, así como si está en horizontal o no
+		 
+		   Post: Si el barco es posible colocarlo ahí en acorde con las normas establecidas en el enunciado del proyecto.
+	       	  
+	       	     Nota: Un barco se puede colocar si no hay casillas generadas en el espacio que ocupa el barco.
+		  
+		 */
+		
+		
+		
+		
 		boolean puede = true;
 		int cte;
 		int min;
@@ -88,6 +94,13 @@ public abstract class Jugador extends Observable {
 	protected void generarBarco(Posicion p1, Posicion p2, int tam, boolean pHor) {
 		
 		
+		/* Pre: Las dos posiciones que marcan las esquinas del barco, así como si está en horizontal o no y su tamaño
+		        El barco PUEDE ser colocado entre las posiciones p1 y p2.
+		 
+		   Post: El barco se pone en la matriz (generando casillas con barco en el camino directo y agua a los lados de el
+		         si no había). Se marcan los colores que se deben actualizar en la interfaz gráfica después.
+		  
+		 */
 	
 		
 		
@@ -99,9 +112,16 @@ public abstract class Jugador extends Observable {
 		Posicion p3 = null;
 		Posicion p4 = null;
 
-
+		Color colorBarco;
 		int cont = 0;
+		
+		if (this.esJ1) {
+			colorBarco = Color.green;
+		} else {
+			colorBarco = Color.cyan;
+		}
 
+		
 	
 		// CALCULAR EXTREMOS PARA AGUA
 		
@@ -134,9 +154,10 @@ public abstract class Jugador extends Observable {
 			cte = p1.getFila();
 			
 			while (min <= max) {
-				p = new ParteBarco(cont, b);
-				matriz[cte][min] = new CasillaDeJuego(p, this.esJ1);
-				cambiosEnMatriz[cte][min] = matriz[cte][min].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
+				matriz[cte][min] = new CasillaDeJuego(this.esJ1, new Posicion(cte,min));
+				p = new ParteBarco(cont, b, matriz[cte][min]);
+				b.addParteBarco(p);
+				this.cambiosEnMatriz[cte][min] = colorBarco;
 				cont++;
 				min++;
 			}
@@ -150,9 +171,10 @@ public abstract class Jugador extends Observable {
 			cte = p1.getCol();
 			
 			while (min <= max) {
-				p = new ParteBarco(cont, b);
-				matriz[min][cte] = new CasillaDeJuego(p, this.esJ1);
-				cambiosEnMatriz[min][cte] = matriz[min][cte].obtenerColorActualizado();; // SE DEBE ACTUALIZAR EL COLOR DESPUES
+				matriz[min][cte] = new CasillaDeJuego(this.esJ1, new Posicion(min,cte));
+				p = new ParteBarco(cont, b, matriz[min][cte]);
+				b.addParteBarco(p);
+				this.cambiosEnMatriz[min][cte] = colorBarco;
 				cont++;
 				min++;
 			}
@@ -160,30 +182,33 @@ public abstract class Jugador extends Observable {
 
 		}
 		
+		// GENERAR EL AGUA QUE RODEA AL BARCO
+		
 		
 		for (int f = p3.getFila(); f <= p4.getFila(); f++) {
 			for (int c = p3.getCol(); c <= p4.getCol(); c++) {
 				
-				if (matriz[f][c] == null) {
-					matriz[f][c] = new CasillaDeJuego(null, this.esJ1); // No barco asignado a casilla
-					cambiosEnMatriz[f][c] = matriz[f][c].obtenerColorActualizado(); // SE DEBE ACTUALIZAR EL COLOR DESPUES
+				if (this.matriz[f][c] == null) {
+					this.matriz[f][c] = new CasillaDeJuego(this.esJ1, new Posicion(f,c)); // No barco asignado a casilla
+					this.cambiosEnMatriz[f][c] = Color.cyan;
+
 
 				}
 			}
 		}
 		
-		
-
 	}
 	
 	
 	protected void completarTablero() {
 		
+		// LLenar el resto del tablero que no tienen casillas colocadas como agua.
+		
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (this.matriz[i][j] == null) {
-					this.matriz[i][j] = new CasillaDeJuego(null, this.esJ1);
-					this.cambiosEnMatriz[i][j] = matriz[i][j].obtenerColorActualizado();;
+					this.matriz[i][j] = new CasillaDeJuego(this.esJ1, new Posicion(i,j));
+					this.cambiosEnMatriz[i][j] = Color.cyan;
 
 				}
 			}
@@ -194,11 +219,11 @@ public abstract class Jugador extends Observable {
 	public boolean haDisparadoAhi(int pF, int pC) {return this.matriz[pF][pC].disparado();}
 	
 	
-	public boolean[] dispararEn(int pF, int pC) {
-		// AÑADIR BOOLEAN DESPUES PARA MISIL O BOMBA
-		boolean[] res = this.matriz[pF][pC].disparar();
-		this.cambiosEnMatriz[pF][pC] = this.matriz[pF][pC].obtenerColorActualizado();
-		return res;
+	public boolean[] dispararEn(Posicion pPos) {
+
+		return this.equipadoCon.usar(this.matriz, this.cambiosEnMatriz, pPos);
+		
+	
 		
 		
 	}
@@ -215,10 +240,22 @@ public abstract class Jugador extends Observable {
 		
 	}
 	
-//	public CasillaDeJuego[][] getMatriz() {return this.matriz;}
+
 	
-//	public boolean[][] getMatrizCambios() {return this.cambiosEnMatriz;}
+	/*	public Color calcularColor(int pF, int pC) {
+	
+	if (this.cambiosEnMatriz[pF][pC]) {
+		this.cambiosEnMatriz[pF][pC] = false;
+		return this.matriz[pF][pC].obtenerColorActualizado();
+	} else {
+		return null;
+	}
+	
+	public CasillaDeJuego[][] getMatriz() {return this.matriz;}
+	
+	public boolean[][] getMatrizCambios() {return this.cambiosEnMatriz;}
 	
 	
+}	*/
 	
 }

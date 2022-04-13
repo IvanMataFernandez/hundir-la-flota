@@ -1,5 +1,3 @@
-
-
 package barco;
 import vista.*;
 public class Main {
@@ -9,19 +7,19 @@ public class Main {
 	public static void main (String args[]) throws InterruptedException {
 		
 		
-		// EL MAIN NO VA A IR DEL TODO HASTA QUE SE HAYA ACABADO EL PONER BARCOS DE IA
-		
-		
-		
-		/* STRATEGY --> BOMBAS / MISIL
-		 * STATE -----> ESCUDO / NO ESCUDO
-		 * 
-		 * MIARAR EL DE COLOCAR IA
+		/*
+		 ESCUDOS YA CREADOS, PARA USARLOS GENERARLO DESDE LA FACTORY Y USAR SU METODO
+		 USAR SOBRE UNA CASILLA DEL BARCO EN LA MATRIZ. 
 		  
+		  
+		  
+		  
+		 
 		 
 		  
 		 */
 	
+		
 		Jugadores listaJugador = Jugadores.getJugadores();	
 		Pantalla.getPantalla(); // INICIALIZAR PANTALLA
 		listaJugador.jugadoresColocanBarcos();

@@ -329,13 +329,13 @@ public class JugadorIA extends Jugador {
 			
 			
 
-			res = jHu.dispararEn(p.getFila(), p.getCol());
+			res = jHu.dispararEn(p);
 				
 			if (res[0]) {
 					
 
 					
-				if (res[1]) {
+				if (res[1]) { // HUNDIDO
 						
 					if (this.tocadoInicial != null) { // Si se estaban centrando tiros en un barco, se quita pq se acaba de hundir
 						this.tocadoInicial = null;
@@ -347,8 +347,18 @@ public class JugadorIA extends Jugador {
 					jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
 
 
-				} else {
+				} else { // ESCUDO
 						
+			
+					encadenar = false; // Fallo, fin del bucle (escudo cuenta como fallo)
+					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Bloqueado por escudo");
+				//	textoYAudio.setAudio("agua");
+				}
+					
+			} else {
+				
+				if (res[1]) { // TOCADO
+					
 					if (this.tocadoInicial == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
 						this.tocadoInicial = new Posicion(p.getFila(),p.getCol());
 						this.sentidoEnComprobacion = this.generador.nextInt(4);
@@ -357,25 +367,29 @@ public class JugadorIA extends Jugador {
 						
 				textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco tocado");
 				textoYAudio.setAudio("tocado");
-
-				}
 					
-			} else {
-				
-				if (this.tocadoInicial != null) {
-					this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
-					this.distancia = 1;
+				} else { // AGUA
+
+					if (this.tocadoInicial != null) {
+						this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
+						this.distancia = 1;
+					}
+					
+					
+					encadenar = false; //Fallo, fin del bucle
+					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Agua");
+					textoYAudio.setAudio("agua");
+					
 				}
 				
-				
-				encadenar = false; //Fallo, fin del bucle
-				textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Agua");
-				textoYAudio.setAudio("agua");
+
 				
 				
 				
 			}
 				
+			
+
 
 				
 			jHu.actualizarCambios();
@@ -399,4 +413,3 @@ public class JugadorIA extends Jugador {
 	
 	
 }
-

@@ -40,28 +40,46 @@ public class JugadorHumano extends Jugador {
 					textoYAudio.setTexto("Ese espacio ya fue disparado");
 
 				} else {
-					res = jIA.dispararEn(filaSelec, colSelec);
+					res = jIA.dispararEn(new Posicion(filaSelec, colSelec));
 					
-					if (res[1]) {
-						jIA.hundeUnBarco();
 
-						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
-						textoYAudio.setAudio("hundido");
-						
-						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
-						
-						
-					} else if (res[0]) {
-						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
-						textoYAudio.setAudio("tocado");
+					if (res[0]) {
+											
+						if (res[1]) { // HUNDIDO
+							
+							jIA.hundeUnBarco();
 
+							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
+							textoYAudio.setAudio("hundido");
+							
+							jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+							
+						} else { // ESCUDO
+						
+							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Bloqueado por escudo");
+						//	textoYAudio.setAudio("bloqueado por escudo");
+							
+						}
+						
 					} else {
-						textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Agua");
-						textoYAudio.setAudio("agua");
-
-					}
+						
+						if (res[1]) { // TOCADO
 					
-					valido = !res[0]; // Si ha tocado, valido false para repetir bucle.
+							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
+							textoYAudio.setAudio("tocado");
+							
+						} else { // AGUA
+							
+							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Agua");
+							textoYAudio.setAudio("agua");
+							
+						}
+						
+						
+					}
+	
+					
+					valido = !res[1]; // Si ha tocado o hundido, repetir proceso.
 					
 					jIA.actualizarCambios();
 

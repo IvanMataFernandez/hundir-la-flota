@@ -1,6 +1,5 @@
 package vista;
 
-import barco.*;
 import java.awt.Color;
 
 import java.util.Observable;
