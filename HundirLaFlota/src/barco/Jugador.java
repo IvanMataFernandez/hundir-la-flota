@@ -10,17 +10,74 @@ public abstract class Jugador extends Observable {
 	private Color[][] cambiosEnMatriz;
 	private int barcosConVida;
 	private Armamento equipadoCon;
+	private Radar radar;
+	private int numEscudos;
 	
 	public Jugador (boolean pJ1) {
 		this.esJ1 = pJ1;
 		this.matriz = new CasillaDeJuego[10][10];
 		this.cambiosEnMatriz = new Color[10][10];
 		this.barcosConVida = 10;
+		this.numEscudos = 5;
 		this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);
+		this.radar = (Radar) FabricaArmamento.getFabricaArmamento().generarArmamento(0);
 	}
 	
+	protected boolean ponerEscudoEn(Posicion pos) {
+		boolean res;
+		FabricaArmamento fab = FabricaArmamento.getFabricaArmamento();
+		Escudo esc = (Escudo) fab.generarArmamento(3);
+		res = esc.usar(matriz, cambiosEnMatriz, pos)[0];
+		
+		if (res) {
+			this.numEscudos--;
+		}
+		
+		return res;
+		
+	}
 	
-	public abstract void disparar() throws ExcepcionFinDePartida;
+	protected int numEscudos() {return this.numEscudos;}
+	
+	protected boolean tieneEscudos() {return this.numEscudos != 0;}
+	
+	protected boolean tieneRadar() {return this.radar != null;}
+	
+	protected Posicion getDeteccionRadar() {return this.radar.getDeteccion();}
+	
+	
+	protected int usosRadarActual() {return this.radar.usosRestantes();}
+	
+	protected Posicion moverRadar() {this.radar.recolocarRadar(this.matriz); return this.radarEn();}
+	
+	protected Posicion radarEn() {return this.radar.getPosicion();}
+	
+	protected boolean usarRadarEnRival() {
+		
+		boolean res[];
+		
+		if (this.esJ1) {
+			res = Jugadores.getJugadores().getJugadorIA().leUsanRadar(this.radar);
+			
+		} else {
+			res = Jugadores.getJugadores().getJugadorHumano().leUsanRadar(this.radar);
+
+		}
+		
+		if (res[1]) {
+			this.radar = null;
+		}
+		
+		return res[0];
+		
+	}
+	
+	public boolean[] leUsanRadar(Radar pRad) {
+		return pRad.usar(matriz, cambiosEnMatriz, null);
+		
+	}
+	
+	public abstract void procesarAcciones() throws ExcepcionFinDePartida;
 	
 	public void actualizarCambios() {
 		

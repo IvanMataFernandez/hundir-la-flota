@@ -9,6 +9,7 @@ public class Radar implements Armamento {
 	private Random aleatorio;
 	private Posicion pos;
 	private int usos;
+	private Posicion deteccion;
 	
 	public Radar () {
 		
@@ -17,17 +18,22 @@ public class Radar implements Armamento {
 		this.usos = 3; // 3 usos al inicio
 	}
 	
+	
+	public Posicion getDeteccion() {return this.deteccion;}
+	
+	public int usosRestantes() {return this.usos;}
+	
 	public boolean[] usar (CasillaDeJuego[][] pMatrizA, Color[][] pMatrizB, Posicion pPos) {
 		
 		
-		
+		// Pre: pPos es irrelevante
 		// Post:  Boolean 0 -> ENC    Boolean 1 --> Se rompe tras usarlo
 		
 		int f = Math.max(this.pos.getFila() - 1, 0);
 		int colInic = Math.max(this.pos.getCol() - 1, 0);
 		int colFin = Math.min(this.pos.getCol() + 1, 9);
 		int filFin = Math.min(this.pos.getFila() + 1, 9);
-		int c;
+		int c = 0;
 		boolean[] enc = new boolean[2];
 		enc[0] = false;
 	
@@ -53,6 +59,12 @@ public class Radar implements Armamento {
 		this.usos--;
 		
 		enc[1] = this.usos == 0;
+		
+		if (enc[0]) {
+			this.deteccion = new Posicion(f-1, c-1);
+		} else {
+			this.deteccion = null;
+		}
 		
 		
 	

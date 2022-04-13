@@ -16,78 +16,102 @@ public class JugadorHumano extends Jugador {
 	
 	
 	
-	public void disparar() throws ExcepcionFinDePartida {
+	public void procesarAcciones() throws ExcepcionFinDePartida {
 		boolean valido = false;
-		boolean res[];
-		int filaSelec;
-		int colSelec;
-		JugadorIA jIA = Jugadores.getJugadores().getJugadorIA();
+		boolean usoRadar = false;
+		boolean atkYNoDef = true;
+		boolean res;
+		
+		Posicion pos;
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		GestorInputs inputs = GestorInputs.getGestor();
-		textoYAudio.setTexto("Elige donde disparar");
+		
+		textoYAudio.setBoton(3, "ocultar" );
+
+		
+		if (super.tieneRadar()) {
+			pos = super.radarEn();
+			textoYAudio.setTexto("Radar en ("+(pos.getFila()+1)+" , "+(char)(65+pos.getCol())+"). Elige donde disparar");
+			textoYAudio.setBoton(1, "usar radar (usos:"+super.usosRadarActual()+")");
+			textoYAudio.setBoton(2, "cambiar posición de radar" );
+			
+
+
+		} else {
+			textoYAudio.setTexto("No tienes radar. Elige donde disparar");
+			textoYAudio.setBoton(1,"ocultar" );
+			textoYAudio.setBoton(2,"ocultar" );
+
+		}	
+			
+		if (super.tieneEscudos()) {
+				
+			textoYAudio.setBoton(0,"cambiar a modo poner escudos (Restantes: "+super.numEscudos()+")" );
+				
+				
+			
+		} else {
+			
+			textoYAudio.setBoton(0,"ocultar" );
+
+				
+		}
+			
+
+			
+			
+		
+		
 		while (!valido) {
 			textoYAudio.actualizarCambios();
-			inputs.esperarInputDeCasilla();
-			valido = inputs.getMatrizJ1Selec();
-			filaSelec = inputs.getFila();
-			colSelec = inputs.getCol();
+			inputs.esperarInput();
 			
-			if (!valido) {
-				textoYAudio.setTexto("Pincha en el tablero del rival");
-
-			} else {
-				valido = !jIA.haDisparadoAhi(filaSelec, colSelec);
+			if (inputs.sePulsoBoton()) {
 				
-				if (!valido) {
-					textoYAudio.setTexto("Ese espacio ya fue disparado");
-
-				} else {
-					res = jIA.dispararEn(new Posicion(filaSelec, colSelec));
+				if (super.tieneEscudos() && inputs.getBotonPulsado() == 0) {
+					atkYNoDef = !atkYNoDef;
 					
+					if (atkYNoDef) {
+						textoYAudio.setTexto("Cambiado a modo disparar");
+						textoYAudio.setBoton(0,"cambiar a modo poner escudos (Restantes: "+super.numEscudos()+")" );
 
-					if (res[0]) {
-											
-						if (res[1]) { // HUNDIDO
-							
-							jIA.hundeUnBarco();
 
-							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco hundido");
-							textoYAudio.setAudio("hundido");
-							
-							jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
-							
-						} else { // ESCUDO
-						
-							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Bloqueado por escudo");
-						//	textoYAudio.setAudio("bloqueado por escudo");
-							
-						}
-						
 					} else {
-						
-						if (res[1]) { // TOCADO
-					
-							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco tocado");
-							textoYAudio.setAudio("tocado");
-							
-						} else { // AGUA
-							
-							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Agua");
-							textoYAudio.setAudio("agua");
-							
-						}
-						
-						
-					}
-	
-					
-					valido = !res[1]; // Si ha tocado o hundido, repetir proceso.
-					
-					jIA.actualizarCambios();
+						textoYAudio.setTexto("Cambiado a modo poner escudos");
+						textoYAudio.setBoton(0,"cambiar a modo disparar" );
 
+					}
+					
+				} else {
+					
+					if (super.tieneRadar() && !usoRadar) {usoRadar = this.usoRadar();}
+					
+					if (usoRadar) {
+						textoYAudio.setBoton(1, "ocultar" );
+						textoYAudio.setBoton(2, "ocultar" );
+					}					
+				}
+				
+
+				
+			} else {
+				
+				if (atkYNoDef) {
+					valido = this.tiroDirecto();					
+				} else {
+					res = this.ponerEscudos();
+					
+					if (res && !super.tieneEscudos()) {
+						textoYAudio.actualizarCambios();
+						textoYAudio.setTexto("Te has quedado sin escudos, cambiando a modo ataque");
+						atkYNoDef = true;
+					}
+					
 				}
 				
 			}
+			
+
 			
 		}
 		
@@ -98,8 +122,153 @@ public class JugadorHumano extends Jugador {
 		
 	}
 	
+	private boolean ponerEscudos() {
+		GestorInputs inputs = GestorInputs.getGestor();
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		int filaSelec = inputs.getFila();
+		int colSelec = inputs.getCol();
+		boolean valido = inputs.getMatrizJ1Selec();
+		
+		if (valido) {
+			valido = super.ponerEscudoEn(new Posicion(filaSelec, colSelec));
+			
+			if (valido) {
+				
+				if (super.tieneEscudos()) {
+					textoYAudio.setTexto("Escudo colocado, te quedan: "+super.numEscudos());					
+				} else {
+					textoYAudio.setBoton(0, "ocultar");
+				}
+				
+				super.actualizarCambios();
 
+				
+			} else {
+				textoYAudio.setTexto("Escudo no se pudo colocar, ponlo en un barco que este en pie");
+
+				
+			}
+			
+			
+			
+		} else {
+			textoYAudio.setTexto("Pincha en tu tablero para poner escudos");
+			
+		}
+		
+		return valido;
+		
+	}
 	
+	private boolean usoRadar() {
+		// Pre: Jugador tiene radar y lo puede usar.
+		// Post: Se usó el radar.
+		
+		GestorInputs inputs = GestorInputs.getGestor();
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		boolean res;
+		Posicion pos;
+		boolean val;
+		
+		if (inputs.getBotonPulsado() == 2) {
+			pos = super.moverRadar();
+			textoYAudio.setTexto("Radar movido a ("+(pos.getFila()+1)+" , "+(char)(65+pos.getCol())+")");
+			val = false;
+			
+		} else {
+			res = super.usarRadarEnRival();
+			
+			
+			if (res) {
+				textoYAudio.setTexto("Barco encontrado");
+				Jugadores.getJugadores().getJugadorIA().actualizarCambios();
+			} else {
+				textoYAudio.setTexto("No hay barcos del rival");
+				
+				
+			}
+			val = true;
+		}
+		
+		return  val;
+
+		
+		
+	}
+	
+
+	private boolean tiroDirecto() throws ExcepcionFinDePartida {
+		boolean res[];
+		int filaSelec;
+		int colSelec;
+		JugadorIA jIA = Jugadores.getJugadores().getJugadorIA();
+		boolean valido;
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		
+		valido = !inputs.getMatrizJ1Selec();
+		filaSelec = inputs.getFila();
+		colSelec = inputs.getCol();
+		
+		if (!valido) {
+			textoYAudio.setTexto("Pincha en el tablero del rival");
+
+		} else {
+			valido = !jIA.haDisparadoAhi(filaSelec, colSelec);
+			
+			if (!valido) {
+				textoYAudio.setTexto("Ese espacio ya fue disparado");
+
+			} else {
+				res = jIA.dispararEn(new Posicion(filaSelec, colSelec));
+				
+
+				if (res[0]) {
+										
+					if (res[1]) { // HUNDIDO
+						
+						jIA.hundeUnBarco();
+
+						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco hundido");
+						textoYAudio.setAudio("hundido");
+						
+						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+						
+					} else { // ESCUDO
+					
+						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Bloqueado por escudo");
+					//	textoYAudio.setAudio("bloqueado por escudo");
+						
+					}
+					
+				} else {
+					
+					if (res[1]) { // TOCADO
+				
+						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco tocado");
+						textoYAudio.setAudio("tocado");
+						
+					} else { // AGUA
+						
+						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Agua");
+						textoYAudio.setAudio("agua");
+						
+					}
+					
+					
+				}
+
+				
+				valido = !res[1]; // Si ha tocado o hundido, repetir proceso.
+				
+				jIA.actualizarCambios();
+
+			}
+			
+		}
+		
+		return valido;
+	}
 	
 
 	public void colocarBarcos() {
@@ -119,6 +288,11 @@ public class JugadorHumano extends Jugador {
 		Posicion aux;
 		
 		textoYAudio.setTexto("Coloca los barcos, pincha en la casilla para poner");
+		
+		for (int i = 0; i != 4; i++) {
+			textoYAudio.setBoton(i, "ocultar");			
+		}
+		
 		
 		for (int i = 0; i != 4; i++) {
 			bConRes[i] = 4-i;

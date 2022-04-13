@@ -30,7 +30,7 @@ public class Jugadores {
 	}
 	
 	public void jugadorActualDispara() throws ExcepcionFinDePartida {
-		this.getJugadorActual().disparar();
+		this.getJugadorActual().procesarAcciones();
 	}
 	
 

@@ -122,6 +122,7 @@ public class Pantalla extends JFrame {
 		
 		for (int i = 0; i != 4; i++) {
 			this.botones[i].addMouseListener(Controlador.getCon());
+			TextoYAudio.getInstancia().addObserver(this.botones[i]);
 		}
 		
 

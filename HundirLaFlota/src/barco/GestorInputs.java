@@ -21,6 +21,7 @@ public class GestorInputs {
 		return GestorInputs.gestor;
 	}
 	
+	public boolean sePulsoBoton() {return this.botonPulsado != -1;}
 	
 	
 	public void cogerInput(CasillaDePantalla pCas) {

@@ -7,10 +7,7 @@ public class JugadorIA extends Jugador {
 
 	
 	private Random generador;
-	
-	
 	private Posicion tocadoInicial;
-	
 	private int sentidoEnComprobacion;
 	private int distancia;
 	
@@ -305,109 +302,133 @@ public class JugadorIA extends Jugador {
 		
 	}
 	
-	public void disparar() throws ExcepcionFinDePartida {
+	public void procesarAcciones() throws ExcepcionFinDePartida {
 		
 		// Pre: Turno de IA
 		// Post: La IA ha disparado hasta fallar una bomba o matado toda la tripulación enemiga (lanza Excepcion)
 		
-		
+		int f;
+		int c;
 		boolean encadenar = true;
-		boolean res[];
+		boolean radarEncuentra = false;
 		Posicion p = null;
-		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
-		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
+
 		
 		
 		this.esperar(1500);
 		
+		
+		if (super.tieneEscudos()) {
+			
+			f = this.generador.nextInt(10);
+			c = this.generador.nextInt(10);
+			
+			super.ponerEscudoEn(new Posicion(f,c));
+			
+		}
+		
 		while (encadenar) {
 
-	
-				
-			p = this.elegirTiro();
-			
-			
-			
+			if (this.tocadoInicial == null && super.tieneRadar() && this.generador.nextInt(100) < 10) {
+				super.moverRadar();
+				radarEncuentra = super.usarRadarEnRival();
 
-			res = jHu.dispararEn(p);
-				
-			if (res[0]) {
-					
-
-					
-				if (res[1]) { // HUNDIDO
-						
-					if (this.tocadoInicial != null) { // Si se estaban centrando tiros en un barco, se quita pq se acaba de hundir
-						this.tocadoInicial = null;
-					}
-						
-					jHu.hundeUnBarco();
-					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco hundido");
-					textoYAudio.setAudio("hundido");
-					jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
-
-
-				} else { // ESCUDO
-						
-			
-					encadenar = false; // Fallo, fin del bucle (escudo cuenta como fallo)
-					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Bloqueado por escudo");
-				//	textoYAudio.setAudio("agua");
-				}
-					
-			} else {
-				
-				if (res[1]) { // TOCADO
-					
-					if (this.tocadoInicial == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
-						this.tocadoInicial = new Posicion(p.getFila(),p.getCol());
-						this.sentidoEnComprobacion = this.generador.nextInt(4);
-						this.distancia = 1;
-				}
-						
-				textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Barco tocado");
-				textoYAudio.setAudio("tocado");
-					
-				} else { // AGUA
-
-					if (this.tocadoInicial != null) {
-						this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
-						this.distancia = 1;
-					}
-					
-					
-					encadenar = false; //Fallo, fin del bucle
-					textoYAudio.setTexto("IA dispara en: "+(p.getFila()+1)+" "+(char)(65+p.getCol())+ ". Agua");
-					textoYAudio.setAudio("agua");
-					
-				}
-				
-
-				
-				
-				
 			}
-				
 			
-
-
+			if (!radarEncuentra) {
+				p = this.elegirTiro();	
 				
-			jHu.actualizarCambios();
-			textoYAudio.actualizarCambios();
+			} else {
+				p = super.getDeteccionRadar();
 
+			}
 
-			this.esperar(1600);
-
-			
-
-
-				
+			encadenar = this.disparar(p);
 			
 			
 		}
 		
 
 		
+	}
+	
+	private boolean disparar(Posicion pPos) throws ExcepcionFinDePartida {
+		
+		boolean encadenar = false;
+		boolean res[];
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
+		
+		res = jHu.dispararEn(pPos);
+			
+		if (res[0]) {
+			
+				
+			if (res[1]) { // HUNDIDO
+					
+				if (this.tocadoInicial != null) { // Si se estaban centrando tiros en un barco, se quita pq se acaba de hundir
+					this.tocadoInicial = null;
+				}
+					
+				jHu.hundeUnBarco();
+				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Barco hundido");
+				textoYAudio.setAudio("hundido");
+				jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
+
+
+			} else { // ESCUDO
+					
+		
+				encadenar = false; // Fallo, fin del bucle (escudo cuenta como fallo)
+				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Bloqueado por escudo");
+			//	textoYAudio.setAudio("agua");
+			}
+				
+		} else {
+			
+			if (res[1]) { // TOCADO
+				
+				if (this.tocadoInicial == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
+					this.tocadoInicial = new Posicion(pPos.getFila(),pPos.getCol());
+					this.sentidoEnComprobacion = this.generador.nextInt(4);
+					this.distancia = 1;
+			}
+					
+			textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Barco tocado");
+			textoYAudio.setAudio("tocado");
+				
+			} else { // AGUA
+
+				if (this.tocadoInicial != null) {
+					this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
+					this.distancia = 1;
+				}
+				
+				
+				encadenar = false; //Fallo, fin del bucle
+				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Agua");
+				textoYAudio.setAudio("agua");
+				
+			}
+			
+
+			
+			
+			
+		}
+			
+		
+
+
+			
+		jHu.actualizarCambios();
+		textoYAudio.actualizarCambios();
+
+
+		this.esperar(1600);
+
+		
+		return encadenar;
 	}
 		
 	
