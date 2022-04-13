@@ -28,7 +28,7 @@ public class JugadorHumano extends Jugador {
 		while (!valido) {
 			textoYAudio.actualizarCambios();
 			inputs.esperarInputDeCasilla();
-			valido = inputs.getMatrizJ1Selec();
+			valido = !inputs.getMatrizJ1Selec();
 			filaSelec = inputs.getFila();
 			colSelec = inputs.getCol();
 			
