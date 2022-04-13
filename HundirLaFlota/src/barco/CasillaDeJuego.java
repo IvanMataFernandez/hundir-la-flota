@@ -43,6 +43,8 @@ public class CasillaDeJuego {
 	
 	public boolean visible() {return this.esDeHumano || this.visible;}
 	
+	public void marcarVisible() {this.visible = true;}
+	
 	public boolean disparado() {return this.disparado; }
 	
 	
@@ -76,12 +78,21 @@ public class CasillaDeJuego {
 	
 	public Posicion pos() {return this.posicion;}
 	
+	public boolean hayBarco() {return this.trozoDeBarco != null;}
 
 	
 	
 	public Color calcularColorSinEscudo() {
 		if (this.disparado) {
 			return Color.red;
+		} else {
+			return Color.green;
+		}
+	}
+	
+	public Color calcularColorSinTocar() {
+		if (this.trozoDeBarco.conEscudo()) { 
+			return Color.black;
 		} else {
 			return Color.green;
 		}

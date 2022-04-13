@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
+import javax.swing.JButton;
 
 
 public class Pantalla extends JFrame {
@@ -28,10 +29,14 @@ public class Pantalla extends JFrame {
 	private JPanel panelDelTexto;
 	private PanelDeTexto texto;
 	private JPanel panelDeJuego;
-	private JPanel panelBotones;
 	private JPanel panelTableros;
 	private JPanel panelJugador;
 	private JPanel panelMaquina;
+	private JPanel panelBotones;
+	private Boton[] botones;
+
+	private JLabel vacio2;
+	private JLabel vacio1;
 	
 
 	/**
@@ -75,8 +80,7 @@ public class Pantalla extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPanelTitulo(), BorderLayout.NORTH);
 		contentPane.add(getPanelCentral(), BorderLayout.CENTER);
-		
-		
+		contentPane.add(getPanelBotones(), BorderLayout.WEST);		
 		
 		this.casillasJugador = new CasillaDePantalla[10][10];
 		this.casillasMaquina = new CasillaDePantalla[10][10];
@@ -90,6 +94,7 @@ public class Pantalla extends JFrame {
 			this.panelJugador.add(new JLabel(Character.toString(c), SwingConstants.CENTER)); 
 			this.panelMaquina.add(new JLabel(Character.toString(c), SwingConstants.CENTER));
 		}
+		
 		
 		for (int i = 0; i != 10; i++) {
 			
@@ -112,12 +117,23 @@ public class Pantalla extends JFrame {
 	
 				
 			}
+
 		}
+		
+		for (int i = 0; i != 4; i++) {
+			this.botones[i].addMouseListener(Controlador.getCon());
+		}
+		
+
+		
+		
+
 	
 	//	this.panelJugador.setBorder(BorderFactory.createLineBorder(Color.pink));
 	//	this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
 
 		TextoYAudio.getInstancia().darPanel(this.texto);
+		contentPane.add(getPanelBotones(), BorderLayout.WEST);
 		this.setVisible(true);
 
 	}
@@ -173,18 +189,12 @@ public class Pantalla extends JFrame {
 		}
 		return panelDeJuego;
 	}
-	private JPanel getPanelBotones() {
-		if (panelBotones == null) {
-			panelBotones = new JPanel();
-		}
-		return panelBotones;
-	}
+
 	private JPanel getPanelTableros() {
 		if (panelTableros == null) {
 			panelTableros = new JPanel();
-			panelTableros.setLayout(new GridLayout(1, 3, 0, 0));
+			panelTableros.setLayout(new GridLayout(1, 2, 0, 0));
 			panelTableros.add(getPanelJugador());
-			panelTableros.add(getPanelBotones());
 			panelTableros.add(getPanelMaquina());
 		}
 		return panelTableros;
@@ -208,4 +218,35 @@ public class Pantalla extends JFrame {
 
 	
 	
+	private JPanel getPanelBotones() {
+		if (panelBotones == null) {
+			panelBotones = new JPanel();
+			panelBotones.setLayout(new GridLayout(6, 1, 0, 0));
+			panelBotones.add(getVacio1());
+			
+			this.botones = new Boton[4];
+			
+			for (int i = 0; i != 4; i++) {
+				this.botones[i] = new Boton(i);
+				panelBotones.add(this.botones[i]);
+			}
+			
+		
+			panelBotones.add(getVacio2());
+		}
+		return panelBotones;
+	}
+
+	private JLabel getVacio2() {
+		if (vacio2 == null) {
+			vacio2 = new JLabel("");
+		}
+		return vacio2;
+	}
+	private JLabel getVacio1() {
+		if (vacio1 == null) {
+			vacio1 = new JLabel("");
+		}
+		return vacio1;
+	}
 }

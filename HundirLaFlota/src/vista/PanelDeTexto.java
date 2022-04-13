@@ -14,7 +14,7 @@ public class PanelDeTexto extends JLabel implements Observer {
 
 	public void update(Observable o, Object arg) {
 		String[] array = (String[]) arg;
-		this.escribir(array[0]);
+		this.escribir(array[1]);
 		
 	}
 	
@@ -30,12 +30,13 @@ public class PanelDeTexto extends JLabel implements Observer {
 		         
 		 */
 		
-
+		
 
 		if (!pTexto.contentEquals("")) {
 			this.setText("");
 			
 			int i = 0;
+			
 			
 			while (i != pTexto.length()) {
 				this.setText(this.getText() + pTexto.charAt(i));

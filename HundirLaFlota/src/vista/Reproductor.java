@@ -79,7 +79,7 @@ public class Reproductor implements Observer {
 
 	public void update(Observable o, Object arg) {
 		String[] array = (String[]) arg;
-		this.sonar(array[1]);
+		this.sonar(array[0]);
 	}
 	
 	

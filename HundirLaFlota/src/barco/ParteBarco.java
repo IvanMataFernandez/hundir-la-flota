@@ -18,6 +18,7 @@ public class ParteBarco {
 	}
 	
 	
+	
 	public boolean disparado() {return this.cas.disparado();}
 	
 	public void marcarComoDisparado() {this.cas.marcarComoDisparado();}

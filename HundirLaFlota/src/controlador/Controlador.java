@@ -2,10 +2,13 @@ package controlador;
 
 import barco.*;
 import vista.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class Controlador implements MouseListener {
+public class Controlador implements MouseListener{
 
 	private static Controlador controlador;
 	
@@ -24,10 +27,14 @@ public class Controlador implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 
 		if (e.getSource() instanceof CasillaDePantalla) {
+			// Se pincha en casilla de tablero
 
 			CasillaDePantalla cas = (CasillaDePantalla) e.getSource();
-			Jugadores.getJugadores().getJugadorHumano().cogerInput(cas);
+			GestorInputs.getGestor().cogerInput(cas);
 			
+		} else {
+			// Se pincha en botón
+			GestorInputs.getGestor().cogerInput((Boton) e.getSource());
 		}
 	
 	}
@@ -51,5 +58,7 @@ public class Controlador implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		
 	}
+
+
 	
 }

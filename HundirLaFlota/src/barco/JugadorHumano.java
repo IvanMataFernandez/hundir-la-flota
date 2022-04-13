@@ -5,10 +5,7 @@ import vista.*;
 
 public class JugadorHumano extends Jugador {
 
-	private boolean aceptaInput;
-	private int filaSelec;
-	private int colSelec;
-	private boolean matrizJ1Selec;
+
 
 
 	
@@ -22,13 +19,18 @@ public class JugadorHumano extends Jugador {
 	public void disparar() throws ExcepcionFinDePartida {
 		boolean valido = false;
 		boolean res[];
+		int filaSelec;
+		int colSelec;
 		JugadorIA jIA = Jugadores.getJugadores().getJugadorIA();
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
 		textoYAudio.setTexto("Elige donde disparar");
 		while (!valido) {
 			textoYAudio.actualizarCambios();
-			this.esperarInput();
-			valido = !this.matrizJ1Selec;
+			inputs.esperarInputDeCasilla();
+			valido = inputs.getMatrizJ1Selec();
+			filaSelec = inputs.getFila();
+			colSelec = inputs.getCol();
 			
 			if (!valido) {
 				textoYAudio.setTexto("Pincha en el tablero del rival");
@@ -49,14 +51,14 @@ public class JugadorHumano extends Jugador {
 							
 							jIA.hundeUnBarco();
 
-							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco hundido");
+							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco hundido");
 							textoYAudio.setAudio("hundido");
 							
 							jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
 							
 						} else { // ESCUDO
 						
-							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Bloqueado por escudo");
+							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Bloqueado por escudo");
 						//	textoYAudio.setAudio("bloqueado por escudo");
 							
 						}
@@ -65,12 +67,12 @@ public class JugadorHumano extends Jugador {
 						
 						if (res[1]) { // TOCADO
 					
-							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Barco tocado");
+							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco tocado");
 							textoYAudio.setAudio("tocado");
 							
 						} else { // AGUA
 							
-							textoYAudio.setTexto("Disparas en:  "+(this.filaSelec+1)+" "+(char)(65+this.colSelec)+ ". Agua");
+							textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Agua");
 							textoYAudio.setAudio("agua");
 							
 						}
@@ -103,10 +105,13 @@ public class JugadorHumano extends Jugador {
 	public void colocarBarcos() {
 
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
 		int barcosRestantes = 10;
 		int[] bConRes = new int[4]; // barcos concretos restantes (de 4,3,2 y 1)
 		int tamSelec; // tamaño del barco que se quiere poner
 		int seleccionesHechas;
+		int filaSelec;
+		int colSelec;
 		boolean valido;
 		boolean selecHorizontal=false;
 		Posicion p1 = null;
@@ -131,8 +136,10 @@ public class JugadorHumano extends Jugador {
 				while (!valido) {
 					textoYAudio.actualizarCambios();
 
-					this.esperarInput();
-					valido = this.matrizJ1Selec;
+					inputs.esperarInputDeCasilla();
+					valido = inputs.getMatrizJ1Selec();
+					filaSelec = inputs.getFila();
+					colSelec = inputs.getCol();
 					
 					if (!valido) {
 						textoYAudio.setTexto("Has pinchado en el tablero del rival");
@@ -141,13 +148,13 @@ public class JugadorHumano extends Jugador {
 					} else {
 						if (seleccionesHechas == 0) {
 
-							p1 = new Posicion(this.filaSelec, this.colSelec);
-							textoYAudio.setTexto("Pinchado en: "+(this.filaSelec+1)+" "+(char)(65+this.colSelec));
+							p1 = new Posicion(filaSelec, colSelec);
+							textoYAudio.setTexto("Pinchado en: "+(filaSelec+1)+" "+(char)(65+colSelec));
 
 
 						} else {
 							
-							p2 = new Posicion(this.filaSelec, this.colSelec);
+							p2 = new Posicion(filaSelec, colSelec);
 				
 
 
@@ -213,7 +220,7 @@ public class JugadorHumano extends Jugador {
 							bConRes[tamSelec]--;
 							barcosRestantes--;
 							
-							textoYAudio.setTexto("Barco colocado, te quedan "+bConRes[tamSelec]+ " de ese tipo");
+							textoYAudio.setTexto("Quedan: Portaaviones: "+bConRes[3]+" | Submarinos: "+bConRes[2]+" | Destructores: "+bConRes[1]+" | Fragatas:  "+bConRes[0]);							
 							textoYAudio.setAudio("construccion");
 							
 							super.actualizarCambios();
@@ -249,7 +256,6 @@ public class JugadorHumano extends Jugador {
 				
 			
 				
-				
 				textoYAudio.actualizarCambios();
 			
 
@@ -265,34 +271,7 @@ public class JugadorHumano extends Jugador {
 	}
 	
 	
-	public void cogerInput(CasillaDePantalla pCas) {
-		
-		if (this.aceptaInput) {
-			this.aceptaInput = false;
-			this.filaSelec = pCas.getFila();
-			this.colSelec = pCas.getCol();
-			this.matrizJ1Selec = pCas.esDeJ1();
-			
-			
-		}
-		
-	//	System.out.println("La fila es: " +pF+" \nLa columna es: "+pC+"\n La matriz es del jugador: " +pJ);
-	}
-	
-	private void esperarInput() {
-		
-		
-		this.aceptaInput = true;
-		this.filaSelec = -1;
-		
-		
 
-		while (this.filaSelec == -1) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {}
-		}
-	}
 	
 
 }

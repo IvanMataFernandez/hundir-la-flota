@@ -1,15 +1,18 @@
 package barco;
 
+import java.util.ArrayList;
+
 public class Jugadores {
 
 	private static Jugadores lista;
-	private JugadorHumano j1;
-	private JugadorIA j2;
+
+	private ArrayList<Jugador> jugadores;
 	private boolean apuntaAJ1;
 	
 	private Jugadores() {
-		this.j1 = new JugadorHumano();
-		this.j2 = new JugadorIA();
+		this.jugadores = new ArrayList<Jugador>();
+		this.jugadores.add(new JugadorHumano());
+		this.jugadores.add(new JugadorIA());
 		this.apuntaAJ1 = true;
 	}
 	
@@ -20,9 +23,9 @@ public class Jugadores {
 	
 	private Jugador getJugadorActual() {
 		if (this.apuntaAJ1) {
-			return this.j1;
+			return this.jugadores.get(0);
 		} else {
-			return this.j2;
+			return this.jugadores.get(1);
 		}
 	}
 	
@@ -33,16 +36,15 @@ public class Jugadores {
 
 	
 	public void jugadoresColocanBarcos() {
-		this.j2.colocarBarcos();
-		this.j1.colocarBarcos();
+		this.jugadores.stream().forEach((j) -> j.colocarBarcos());
 	}
 	
 	public void cambiarJugador() {this.apuntaAJ1 = !this.apuntaAJ1;}
 	
 	
-	public JugadorHumano getJugadorHumano() {return this.j1;}
+	public JugadorHumano getJugadorHumano() {return (JugadorHumano) this.jugadores.get(0);}
 	
-	public JugadorIA getJugadorIA() {return this.j2;}
+	public JugadorIA getJugadorIA() {return (JugadorIA) this.jugadores.get(1);}
 	
 	
 	

@@ -2,6 +2,7 @@ package barco;
 
 
 import vista.*;
+
 import java.util.Observable;
 
 public class TextoYAudio extends Observable {
@@ -10,11 +11,24 @@ public class TextoYAudio extends Observable {
 	
 	
 	private static TextoYAudio textoYAudio;
-	private String audioAReproducir;
-	private String textoAEscribir;
+	private String[] contenidosAEscribir; // audio, texto, bot1, bot2, bot3, bot4
 	
 	
-	private TextoYAudio () {this.audioAReproducir = ""; this.textoAEscribir = "";}
+	private TextoYAudio () {
+		this.contenidosAEscribir = new String[6];
+		
+		this.resetearStrings();
+
+		
+	}
+	
+	private void resetearStrings() {
+		
+		for (int i = 0; i != 6; i++) {
+			this.contenidosAEscribir[i] = "";
+		}
+	
+	}
 	
 	public static TextoYAudio getInstancia() {
 		if (TextoYAudio.textoYAudio == null) {TextoYAudio.textoYAudio = new TextoYAudio();}
@@ -30,19 +44,19 @@ public class TextoYAudio extends Observable {
 	
 
 	public void actualizarCambios() {
+
 		
-		String[] array = new String[2];
-		array[0] = this.textoAEscribir;
-		array[1] = this.audioAReproducir;
 		
 		this.setChanged();
-		this.notifyObservers(array);
-		this.textoAEscribir = "";
-		this.audioAReproducir = "";
+		this.notifyObservers(this.contenidosAEscribir);
+		this.resetearStrings();
+
 	}
 	
-	public void setAudio(String pS) {this.audioAReproducir = pS;}
-	public void setTexto(String pS) {this.textoAEscribir = pS;}
-	
+	public void setAudio(String pS) {this.contenidosAEscribir[0] = pS;}
+	public void setTexto(String pS) {this.contenidosAEscribir[1] = pS;}
+	public void setBoton(int pID, String pS) {
+		this.contenidosAEscribir[2+pID] = pS;
+	}
 
 }
