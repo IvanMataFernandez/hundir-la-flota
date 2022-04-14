@@ -11,7 +11,7 @@ public class TextoYAudio extends Observable {
 	
 	
 	private static TextoYAudio textoYAudio;
-	private String[] contenidosAEscribir; // audio, texto, bot1, bot2, bot3, bot4
+	private String[] contenidosAEscribir; // audio, texto, btn1, btn2, btn3, btn4
 	
 	
 	private TextoYAudio () {

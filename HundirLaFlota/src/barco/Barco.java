@@ -120,11 +120,6 @@ public abstract class Barco {
 		
 	}
 	
-	
-	/*	public void marcarColoresEnTodoElBarco (Color[][] pMatriz) {
-	this.trozosDeBarcos.stream().forEach((p) -> p.(Color.black, pMatriz));
-} */
-	
-	
+
 
 }

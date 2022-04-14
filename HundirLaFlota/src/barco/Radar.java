@@ -27,23 +27,25 @@ public class Radar implements Armamento {
 		
 		
 		// Pre: pPos es irrelevante
-		// Post:  Boolean 0 -> ENC    Boolean 1 --> Se rompe tras usarlo
+		// Post:  True <--> ENC
 		
+		
+
+
 		int f = Math.max(this.pos.getFila() - 1, 0);
 		int colInic = Math.max(this.pos.getCol() - 1, 0);
 		int colFin = Math.min(this.pos.getCol() + 1, 9);
 		int filFin = Math.min(this.pos.getFila() + 1, 9);
 		int c = 0;
-		boolean[] enc = new boolean[2];
-		enc[0] = false;
-	
+		boolean[] enc = new boolean[1];
+		TextoYAudio.getInstancia().setAudio("radar");
 		
 		while (!enc[0] && f <= filFin) {
 			c = colInic;
 			
 			while (!enc[0] && c <= colFin) {
 				
-				if (!pMatrizA[f][c].visible() && pMatrizA[f][c].hayBarco()) {
+				if (!pMatrizA[f][c].seVio() && pMatrizA[f][c].hayBarco()) {
 					pMatrizA[f][c].marcarVisible();
 					enc[0] = true;
 					pMatrizB[f][c] = pMatrizA[f][c].calcularColorSinTocar();
@@ -58,7 +60,6 @@ public class Radar implements Armamento {
 		
 		this.usos--;
 		
-		enc[1] = this.usos == 0;
 		
 		if (enc[0]) {
 			this.deteccion = new Posicion(f-1, c-1);

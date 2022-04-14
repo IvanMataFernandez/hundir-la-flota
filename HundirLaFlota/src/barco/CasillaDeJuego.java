@@ -8,7 +8,7 @@ public class CasillaDeJuego {
 	private ParteBarco trozoDeBarco;
 	private boolean disparado;
 	private boolean esDeHumano;
-	private boolean visible; // SOLO RELEVANTE CON IA
+	private boolean visible; 
 	private Posicion posicion;
 	
 	
@@ -42,6 +42,8 @@ public class CasillaDeJuego {
 	}
 	
 	public boolean visible() {return this.esDeHumano || this.visible;}
+	
+	public boolean seVio() {return this.visible;}
 	
 	public void marcarVisible() {this.visible = true;}
 	
@@ -97,63 +99,7 @@ public class CasillaDeJuego {
 			return Color.green;
 		}
 	}
-	
-/*	public Color obtenerColorActualizado() {
-		
-		Color color;
-		
-		
 
-		
-		if (this.disparado) {
-			
-			
-			if (this.trozoDeBarco != null) {
-				color = Color.red;
-				
-			} else {
-				color = Color.blue;
-				
-				
-			}
-			
-		} else if (this.esDeHumano || this.visible) {
-			
-			
-			if (this.trozoDeBarco == null) {
-				color = Color.cyan;
-				
-			} else if (this.trozoDeBarco.conEscudo()) {
-				color = Color.black; // COLOR DEL ESCUDO
-				
-			} else {
-				color = Color.green;
-			}
-			
-		} else  {
-			
-			
-			
-			
-				color = Color.cyan;
-			
-		}
- 		
-		
-		
-		
-		return color;
-	} 
-	
-		public void marcarColoresEnTodoElBarco(Color[][] pMatriz) {
-		
-		if (this.esDeHumano) {
-			this.trozoDeBarco.marcarColoresEnTodoElBarco(pMatriz);			
-		}
-		
-	} */
-
-	
 	
 	
 }

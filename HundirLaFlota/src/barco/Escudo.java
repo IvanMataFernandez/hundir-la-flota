@@ -17,6 +17,10 @@ public class Escudo implements Armamento {
 		boolean[] res = new boolean[1];
 		res [0] = pMatrizA[pPos.getFila()][pPos.getCol()].ponerEscudo(this, pMatrizB);
 		
+		if (res[0]) {
+			TextoYAudio.getInstancia().setAudio("escudoPuesto");
+		}
+		
 		return res;
 	}
 	
@@ -25,7 +29,7 @@ public class Escudo implements Armamento {
 	public boolean procesarDaño(Armamento pTiro) {
 		
 		
-		// Post:  EL ESCUDO SE DESTRUYE
+		// Post: True <--> EL ESCUDO SE DESTRUYE
 		
 		if (this.sinTocar && pTiro instanceof Bomba) {
 			this.sinTocar = false;

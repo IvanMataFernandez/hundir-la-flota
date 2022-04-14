@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 
@@ -42,7 +44,7 @@ public class Pantalla extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -53,7 +55,7 @@ public class Pantalla extends JFrame {
 				}
 			}
 		});
-	}
+	} */
 	
 	
 	
@@ -120,10 +122,7 @@ public class Pantalla extends JFrame {
 
 		}
 		
-		for (int i = 0; i != 4; i++) {
-			this.botones[i].addMouseListener(Controlador.getCon());
-			TextoYAudio.getInstancia().addObserver(this.botones[i]);
-		}
+
 		
 
 		
@@ -134,7 +133,20 @@ public class Pantalla extends JFrame {
 	//	this.panelMaquina.setBorder(BorderFactory.createLineBorder(Color.pink));
 
 		TextoYAudio.getInstancia().darPanel(this.texto);
+		
+		for (int i = 0; i != 4; i++) {
+			this.botones[i].addMouseListener(Controlador.getCon());
+			TextoYAudio.getInstancia().addObserver(this.botones[i]);
+		}
+		
+		
 		contentPane.add(getPanelBotones(), BorderLayout.WEST);
+		
+		ImageIcon im = new ImageIcon(".\\materiales\\icono.png");
+		this.setIconImage(im.getImage());
+		this.setTitle("Hundir La Flota");
+		
+		
 		this.setVisible(true);
 
 	}

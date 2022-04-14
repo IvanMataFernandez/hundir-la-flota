@@ -145,6 +145,7 @@ public class JugadorHumano extends Jugador {
 				
 			} else {
 				textoYAudio.setTexto("Escudo no se pudo colocar, ponlo en un barco que este en pie");
+				textoYAudio.setAudio("error");
 
 				
 			}
@@ -153,7 +154,8 @@ public class JugadorHumano extends Jugador {
 			
 		} else {
 			textoYAudio.setTexto("Pincha en tu tablero para poner escudos");
-			
+			textoYAudio.setAudio("error");
+
 		}
 		
 		return valido;
@@ -212,12 +214,14 @@ public class JugadorHumano extends Jugador {
 		
 		if (!valido) {
 			textoYAudio.setTexto("Pincha en el tablero del rival");
+			textoYAudio.setAudio("error");
 
 		} else {
 			valido = !jIA.haDisparadoAhi(filaSelec, colSelec);
 			
 			if (!valido) {
 				textoYAudio.setTexto("Ese espacio ya fue disparado");
+				textoYAudio.setAudio("error");
 
 			} else {
 				res = jIA.dispararEn(new Posicion(filaSelec, colSelec));
@@ -227,17 +231,16 @@ public class JugadorHumano extends Jugador {
 										
 					if (res[1]) { // HUNDIDO
 						
-						jIA.hundeUnBarco();
 
 						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Barco hundido");
 						textoYAudio.setAudio("hundido");
-						
-						jIA.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos
+						jIA.hundeUnBarco();
+
 						
 					} else { // ESCUDO
 					
 						textoYAudio.setTexto("Disparas en:  "+(filaSelec+1)+" "+(char)(65+colSelec)+ ". Bloqueado por escudo");
-					//	textoYAudio.setAudio("bloqueado por escudo");
+						textoYAudio.setAudio("escudo");
 						
 					}
 					

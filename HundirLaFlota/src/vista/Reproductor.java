@@ -18,7 +18,9 @@ public class Reproductor implements Observer {
 	     - error.wav ---------> Sonido que suena cuando se intenta hacer algo no permitido
 	     - hundido.wav -------> Sonido que suena cuando se hunde un barco
 	     - tocado.wav --------> Sonido que suena cuando se toca un barco (y no se hunde)
-	  
+	  	 - escudo.wav --------> Sonido que suena cuando se golpea un barco con escudo
+	  	 - escudoPuesto.wav --------> Sonido que suena cuando se pone un escudo a un barco
+
 	  
 	  
 	  
@@ -54,7 +56,12 @@ public class Reproductor implements Observer {
 		
 		try {
 			
-			if (!pS.contentEquals("") && (this.clip == null || !this.clip.isRunning())) {
+			if (!pS.contentEquals("") ) {
+				
+				if (this.clip != null && this.clip.isRunning()) {
+					this.clip.stop();
+				}
+				
 				AudioInputStream audio = AudioSystem.getAudioInputStream(new File(".\\materiales\\"+pS+".wav"));
 				this.clip = AudioSystem.getClip();
 				this.clip.open(audio);

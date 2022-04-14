@@ -41,7 +41,7 @@ public abstract class Jugador extends Observable {
 	
 	protected boolean tieneEscudos() {return this.numEscudos != 0;}
 	
-	protected boolean tieneRadar() {return this.radar != null;}
+	protected boolean tieneRadar() {return this.radar.usosRestantes() != 0;}
 	
 	protected Posicion getDeteccionRadar() {return this.radar.getDeteccion();}
 	
@@ -54,7 +54,7 @@ public abstract class Jugador extends Observable {
 	
 	protected boolean usarRadarEnRival() {
 		
-		boolean res[];
+		boolean res;
 		
 		if (this.esJ1) {
 			res = Jugadores.getJugadores().getJugadorIA().leUsanRadar(this.radar);
@@ -64,16 +64,14 @@ public abstract class Jugador extends Observable {
 
 		}
 		
-		if (res[1]) {
-			this.radar = null;
-		}
+
 		
-		return res[0];
+		return res;
 		
 	}
 	
-	public boolean[] leUsanRadar(Radar pRad) {
-		return pRad.usar(matriz, cambiosEnMatriz, null);
+	public boolean leUsanRadar(Radar pRad) {
+		return pRad.usar(matriz, cambiosEnMatriz, null)[0];
 		
 	}
 	
@@ -287,17 +285,19 @@ public abstract class Jugador extends Observable {
 		
 	}
 	
-	public void hundeUnBarco() {this.barcosConVida--;}
-	
-	public void acabaLaPartida() throws ExcepcionFinDePartida {
+	public void hundeUnBarco() throws ExcepcionFinDePartida {
+		this.barcosConVida--;
 		
+	
 		if (this.barcosConVida == 0) {
 			this.actualizarCambios();
 			TextoYAudio.getInstancia().actualizarCambios();
 			throw new ExcepcionFinDePartida(!this.esJ1);
 		}
-		
+	
 	}
+	
+
 	
 
 	

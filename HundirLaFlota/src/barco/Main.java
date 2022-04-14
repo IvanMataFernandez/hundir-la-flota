@@ -6,18 +6,7 @@ public class Main {
 	
 	public static void main (String args[]) throws InterruptedException {
 		
-		
-		/*
-		 ESCUDOS YA CREADOS, PARA USARLOS GENERARLO DESDE LA FACTORY Y USAR SU METODO
-		 USAR SOBRE UNA CASILLA DEL BARCO EN LA MATRIZ. 
-		  
-		  
-		  
-		  
-		 
-		 
-		  
-		 */
+
 	
 		
 		Jugadores listaJugador = Jugadores.getJugadores();	

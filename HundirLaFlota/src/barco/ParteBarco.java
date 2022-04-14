@@ -24,10 +24,7 @@ public class ParteBarco {
 	public void marcarComoDisparado() {this.cas.marcarComoDisparado();}
 	
 	
-/*	public void marcarColoresEnTodoElBarco(Color[][] pMatriz) {
-		this.barco.marcarColoresEnTodoElBarco(pMatriz);
-		
-	} */
+
 	
 	
 	public void visibilizarEscudo (Color[][] pMatriz) {

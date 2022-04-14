@@ -7,7 +7,10 @@ public class JugadorIA extends Jugador {
 
 	
 	private Random generador;
-	private Posicion tocadoInicial;
+	private Posicion tocadoInicialDeBarco;
+	private Posicion escudoTocado;
+	private boolean detectoConRadar;
+	private boolean conoceSentidoDeBarco;
 	private int sentidoEnComprobacion;
 	private int distancia;
 	
@@ -187,16 +190,25 @@ public class JugadorIA extends Jugador {
 		Posicion p = null;
 		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
 
+		
+		
 		switch (this.sentidoEnComprobacion) {
 		
 			case 0: // Mirar arriba
 			
-				if (this.tocadoInicial.getFila() - this.distancia >= 0 && !jHu.haDisparadoAhi(this.tocadoInicial.getFila()-distancia, this.tocadoInicial.getCol())) {
-					p = new Posicion(this.tocadoInicial.getFila()-this.distancia, this.tocadoInicial.getCol());
+				if (this.tocadoInicialDeBarco.getFila() - this.distancia >= 0 && !jHu.haDisparadoAhi(this.tocadoInicialDeBarco.getFila()-distancia, this.tocadoInicialDeBarco.getCol())) {
+					p = new Posicion(this.tocadoInicialDeBarco.getFila()-this.distancia, this.tocadoInicialDeBarco.getCol());
 					this.distancia++;
 
 				} else {
-					this.sentidoEnComprobacion = 1;
+					
+					if (this.conoceSentidoDeBarco) {
+						this.sentidoEnComprobacion = 2;
+					} else {
+						this.sentidoEnComprobacion = 1;
+
+					}
+					
 					this.distancia = 1;
 				}
 
@@ -205,12 +217,19 @@ public class JugadorIA extends Jugador {
 		
 			case 1:   // Mirar derecha
 			
-				if (this.tocadoInicial.getCol() + this.distancia <= 9 && !jHu.haDisparadoAhi(this.tocadoInicial.getFila(), this.tocadoInicial.getCol()+distancia)) {
-					p = new Posicion(this.tocadoInicial.getFila(), this.tocadoInicial.getCol()+distancia);
+				if (this.tocadoInicialDeBarco.getCol() + this.distancia <= 9 && !jHu.haDisparadoAhi(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()+distancia)) {
+					p = new Posicion(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()+distancia);
 					this.distancia++;
 
 				} else {
-					this.sentidoEnComprobacion = 2;
+					
+					if (this.conoceSentidoDeBarco) {
+						this.sentidoEnComprobacion = 3;
+					} else {
+						this.sentidoEnComprobacion = 2;
+
+					}					
+					
 					this.distancia = 1;
 				}
 			
@@ -219,24 +238,38 @@ public class JugadorIA extends Jugador {
 		
 			case 2:   // Mirar abajo
 			
-				if (this.tocadoInicial.getFila() + this.distancia <= 9 && !jHu.haDisparadoAhi(this.tocadoInicial.getFila()+distancia, this.tocadoInicial.getCol())) {
-					p = new Posicion(this.tocadoInicial.getFila()+this.distancia, this.tocadoInicial.getCol());
+				if (this.tocadoInicialDeBarco.getFila() + this.distancia <= 9 && !jHu.haDisparadoAhi(this.tocadoInicialDeBarco.getFila()+distancia, this.tocadoInicialDeBarco.getCol())) {
+					p = new Posicion(this.tocadoInicialDeBarco.getFila()+this.distancia, this.tocadoInicialDeBarco.getCol());
 					this.distancia++;
 
 				} else {
-					this.sentidoEnComprobacion = 3;
+					
+					if (this.conoceSentidoDeBarco) {
+						this.sentidoEnComprobacion = 0;
+					} else {
+						this.sentidoEnComprobacion = 3;
+
+					}					
+					
 					this.distancia = 1;
 				}
 			
 				break;
 			case 3:	  // Mirar izquierda
 			
-				if (this.tocadoInicial.getCol() - this.distancia >= 0 && !jHu.haDisparadoAhi(this.tocadoInicial.getFila(), this.tocadoInicial.getCol()-distancia)) {
-					p = new Posicion(this.tocadoInicial.getFila(), this.tocadoInicial.getCol()-distancia);
+				if (this.tocadoInicialDeBarco.getCol() - this.distancia >= 0 && !jHu.haDisparadoAhi(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()-distancia)) {
+					p = new Posicion(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()-distancia);
 					this.distancia++;
 
 				} else {
-					this.sentidoEnComprobacion = 0;
+
+					if (this.conoceSentidoDeBarco) {
+						this.sentidoEnComprobacion = 1;
+					} else {
+						this.sentidoEnComprobacion = 0;
+
+					}
+					
 					this.distancia = 1;
 				}
 			
@@ -275,7 +308,34 @@ public class JugadorIA extends Jugador {
 		boolean valido = false;
 		Posicion p = null;
 		
-		if (this.tocadoInicial == null) {  // Tiro completamente aleatorio
+		if (this.escudoTocado != null) {  // Pegar al escudo otra vez
+			
+			p = this.escudoTocado;
+
+
+
+			
+		} else if (this.tocadoInicialDeBarco != null) {  // Tiro para encadenar el barco
+			
+			while (p == null) {
+				p = this.elegirTiroPreciso();
+			}
+			
+			
+		
+
+			
+		} else if (this.detectoConRadar) {    // Tiro usando la información del radar obtenida
+			this.detectoConRadar = false;
+						
+			p = super.getDeteccionRadar();
+			
+
+			
+		} else {  // Tiro al azar sin info
+			
+			
+
 			
 			while (!valido) {               
 				fila = this.generador.nextInt(10);
@@ -284,17 +344,6 @@ public class JugadorIA extends Jugador {
 			}
 			
 			p = new Posicion(fila,col);
-
-
-			
-		} else {                            // Tiro con más certeza
-			
-			while (p == null) {
-				p = this.elegirTiroPreciso();
-			}
-			
-		
-
 			
 		}
 		
@@ -302,15 +351,63 @@ public class JugadorIA extends Jugador {
 		
 	}
 	
+	private void procesarEscudo () {
+		
+		boolean escudoPuesto;
+
+		if (super.tieneEscudos()) { 
+			
+			
+			escudoPuesto = super.ponerEscudoEn(new Posicion(this.generador.nextInt(10),this.generador.nextInt(10)));
+
+			
+			
+			
+			if (escudoPuesto) {	
+				super.actualizarCambios();
+				TextoYAudio.getInstancia().setTexto("IA refuerza barco con escudo");
+				TextoYAudio.getInstancia().actualizarCambios();
+				this.esperar(1000);
+
+			}
+			
+		}	
+		
+	}
+	
+	private void procesarRadar() {
+		
+		
+		
+		if (!this.detectoConRadar && super.tieneRadar() && this.generador.nextInt(10) == 0) {
+			super.moverRadar();
+			
+			
+			this.detectoConRadar = super.usarRadarEnRival();
+			
+			
+			
+			if (this.detectoConRadar) {
+				TextoYAudio.getInstancia().setTexto("¡IA usa radar y encuentra un barco!");
+			} else  {
+				TextoYAudio.getInstancia().setTexto("IA usa radar pero no encuentra nada...");
+
+			}
+			
+			TextoYAudio.getInstancia().actualizarCambios();
+			this.esperar(1000);
+
+		}
+		
+	}
+
 	public void procesarAcciones() throws ExcepcionFinDePartida {
 		
 		// Pre: Turno de IA
 		// Post: La IA ha disparado hasta fallar una bomba o matado toda la tripulación enemiga (lanza Excepcion)
 		
-		int f;
-		int c;
+
 		boolean encadenar = true;
-		boolean radarEncuentra = false;
 		Posicion p = null;
 
 		
@@ -318,43 +415,41 @@ public class JugadorIA extends Jugador {
 		this.esperar(1500);
 		
 		
-		if (super.tieneEscudos()) {
-			
-			f = this.generador.nextInt(10);
-			c = this.generador.nextInt(10);
-			
-			super.ponerEscudoEn(new Posicion(f,c));
-			
-		}
+		// PONER ESCUDO ANTES DE TIRAR
+		
+		this.procesarEscudo();
+
+		
+		
+		// CONSULTAR RADAR
+		
+		this.procesarRadar();
+
+		
+		// TIRAR
 		
 		while (encadenar) {
 
-			if (this.tocadoInicial == null && super.tieneRadar() && this.generador.nextInt(100) < 10) {
-				super.moverRadar();
-				radarEncuentra = super.usarRadarEnRival();
 
-			}
 			
-			if (!radarEncuentra) {
-				p = this.elegirTiro();	
-				
-			} else {
-				p = super.getDeteccionRadar();
-
-			}
-
+			p = this.elegirTiro();	
+			
 			encadenar = this.disparar(p);
+
+				
+
+		}
+
 			
 			
 		}
 		
 
 		
-	}
+	
 	
 	private boolean disparar(Posicion pPos) throws ExcepcionFinDePartida {
 		
-		boolean encadenar = false;
 		boolean res[];
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
@@ -366,46 +461,74 @@ public class JugadorIA extends Jugador {
 				
 			if (res[1]) { // HUNDIDO
 					
-				if (this.tocadoInicial != null) { // Si se estaban centrando tiros en un barco, se quita pq se acaba de hundir
-					this.tocadoInicial = null;
+				if (this.tocadoInicialDeBarco != null) { // Si se estaban centrando tiros en un barco, se quita pq se acaba de hundir
+					this.tocadoInicialDeBarco = null;
+				}
+				
+				if (this.escudoTocado != null) { // Si estaba tirando a la misma casilla para romper el escudo, ya lo hizo
+					this.escudoTocado = null;
 				}
 					
-				jHu.hundeUnBarco();
 				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Barco hundido");
 				textoYAudio.setAudio("hundido");
-				jHu.acabaLaPartida(); // Lanza excepcion si se quedo sin barcos								
+				jHu.hundeUnBarco();
 
 
 			} else { // ESCUDO
 					
+				
+				if (this.escudoTocado == null) {
+					this.escudoTocado = pPos;
+				}
+				
+				
 		
-				encadenar = false; // Fallo, fin del bucle (escudo cuenta como fallo)
 				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Bloqueado por escudo");
-			//	textoYAudio.setAudio("agua");
+				textoYAudio.setAudio("escudo");
+
 			}
 				
 		} else {
 			
 			if (res[1]) { // TOCADO
 				
-				if (this.tocadoInicial == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
-					this.tocadoInicial = new Posicion(pPos.getFila(),pPos.getCol());
+				if (this.tocadoInicialDeBarco == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
+					this.conoceSentidoDeBarco = false;
+					this.tocadoInicialDeBarco = pPos;
 					this.sentidoEnComprobacion = this.generador.nextInt(4);
 					this.distancia = 1;
-			}
+				} else {
+					this.conoceSentidoDeBarco = true;
+				}
+				
+				if (this.escudoTocado != null) { // Si estaba tirando a la misma casilla para romper el escudo, ya lo hizo
+					this.escudoTocado = null;
+				}
 					
 			textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Barco tocado");
 			textoYAudio.setAudio("tocado");
 				
 			} else { // AGUA
 
-				if (this.tocadoInicial != null) {
-					this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
+				if (this.tocadoInicialDeBarco != null) {
+					
+					if (this.conoceSentidoDeBarco) {
+						
+						switch (this.sentidoEnComprobacion) {
+							case 0: this.sentidoEnComprobacion = 2; break;
+							case 1: this.sentidoEnComprobacion = 3; break;
+							case 2: this.sentidoEnComprobacion = 0; break;
+							case 3: this.sentidoEnComprobacion = 1; 
+						}
+	
+					} else {
+						this.sentidoEnComprobacion++; if (this.sentidoEnComprobacion == 4) {this.sentidoEnComprobacion = 0;}
+					}
+					
 					this.distancia = 1;
 				}
 				
 				
-				encadenar = false; //Fallo, fin del bucle
 				textoYAudio.setTexto("IA dispara en: "+(pPos.getFila()+1)+" "+(char)(65+pPos.getCol())+ ". Agua");
 				textoYAudio.setAudio("agua");
 				
@@ -428,7 +551,7 @@ public class JugadorIA extends Jugador {
 		this.esperar(1600);
 
 		
-		return encadenar;
+		return res[1];
 	}
 		
 	
