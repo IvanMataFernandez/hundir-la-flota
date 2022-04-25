@@ -142,7 +142,7 @@ public class Pantalla extends JFrame {
 		
 		contentPane.add(getPanelBotones(), BorderLayout.WEST);
 		
-		ImageIcon im = new ImageIcon(".\\materiales\\icono.png");
+		ImageIcon im = new ImageIcon(Main.class.getResource("/icono.png"));
 		this.setIconImage(im.getImage());
 		this.setTitle("Hundir La Flota");
 		
@@ -166,7 +166,7 @@ public class Pantalla extends JFrame {
 			titulo = new JLabel();
 	
 			titulo.setHorizontalAlignment(SwingConstants.CENTER);
-			titulo.setIcon(new ImageIcon(".\\materiales\\titulo.png"));
+			titulo.setIcon(new ImageIcon(Main.class.getResource("/titulo.png")));
 		}
 		return titulo;
 	}

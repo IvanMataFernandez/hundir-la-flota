@@ -8,6 +8,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+import barco.Main;
+
 public class Reproductor implements Observer {
 
 	
@@ -61,11 +63,11 @@ public class Reproductor implements Observer {
 				if (this.clip != null && this.clip.isRunning()) {
 					this.clip.stop();
 				}
-				
-				AudioInputStream audio = AudioSystem.getAudioInputStream(new File(".\\materiales\\"+pS+".wav"));
+				AudioInputStream audio = AudioSystem.getAudioInputStream(Main.class.getResource("/"+pS+".wav"));
 				this.clip = AudioSystem.getClip();
 				this.clip.open(audio);
 				this.clip.start();
+
 			}
 
 		} catch (Exception e) {
