@@ -8,6 +8,8 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import barco.FabricaColores;
+
 public class CasillaDePantalla extends JLabel implements Observer {
 	
 	
@@ -22,7 +24,7 @@ public class CasillaDePantalla extends JLabel implements Observer {
 		this.fila = pFila;
 		this.columna = pCol;
 		this.esDeJugador = pJ;
-		super.setBackground(Color.DARK_GRAY);
+		super.setBackground(FabricaColores.getFabricaColores().generarColores("AguaTocada"));
 		super.setBorder(BorderFactory.createLineBorder(Color.white));
 		super.setOpaque(true);
 		

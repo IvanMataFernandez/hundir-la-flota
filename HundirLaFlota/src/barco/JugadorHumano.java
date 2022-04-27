@@ -1,6 +1,5 @@
 package barco;
 
-import vista.*;
 
 
 public class JugadorHumano extends Jugador {

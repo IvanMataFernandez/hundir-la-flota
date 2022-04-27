@@ -29,7 +29,7 @@ public class ParteBarco {
 	
 	public void visibilizarEscudo (Color[][] pMatriz) {
 		if (cas.visible()) {
-			pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = Color.black;			
+			pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoEscudo");			
 		}
 		
 	}
@@ -50,7 +50,7 @@ public class ParteBarco {
 
 		if (res[0]) {
 			if (!res[1]) {
-				pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = Color.gray; // MARCAR COMO ESCUDO DAÑADO
+				pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoEscudoTocado"); // MARCAR COMO ESCUDO DAÑADO
 		
 			}
 			
@@ -58,7 +58,7 @@ public class ParteBarco {
 		
 		} else {
 			
-			pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = Color.red; // MARCAR COMO DAÑADO
+			pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoTocado"); // MARCAR COMO DAÑADO
 		
 			
 			

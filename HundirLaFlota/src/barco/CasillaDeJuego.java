@@ -70,7 +70,7 @@ public class CasillaDeJuego {
 		} else {
 			res[0] = false;
 			res[1] = false;
-			pMatriz[this.posicion.getFila()][this.posicion.getCol()] = Color.blue;
+			pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("AguaTocada");
 		}
 		
 		return res;
@@ -86,17 +86,17 @@ public class CasillaDeJuego {
 	
 	public Color calcularColorSinEscudo() {
 		if (this.disparado) {
-			return Color.red;
+			return FabricaColores.getFabricaColores().generarColores("BarcoTocado");
 		} else {
-			return Color.green;
+			return FabricaColores.getFabricaColores().generarColores("BarcoColocado");
 		}
 	}
 	
 	public Color calcularColorSinTocar() {
 		if (this.trozoDeBarco.conEscudo()) { 
-			return Color.black;
+			return FabricaColores.getFabricaColores().generarColores("BarcoEscudo");
 		} else {
-			return Color.green;
+			return FabricaColores.getFabricaColores().generarColores("BarcoColocado");
 		}
 	}
 

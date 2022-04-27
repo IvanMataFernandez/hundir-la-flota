@@ -171,9 +171,9 @@ public abstract class Jugador extends Observable {
 		int cont = 0;
 		
 		if (this.esJ1) {
-			colorBarco = Color.green;
+			colorBarco = FabricaColores.getFabricaColores().generarColores("BarcoColocado");
 		} else {
-			colorBarco = Color.cyan;
+			colorBarco = FabricaColores.getFabricaColores().generarColores("AguaBase");
 		}
 
 		
@@ -245,7 +245,7 @@ public abstract class Jugador extends Observable {
 				
 				if (this.matriz[f][c] == null) {
 					this.matriz[f][c] = new CasillaDeJuego(this.esJ1, new Posicion(f,c)); // No barco asignado a casilla
-					this.cambiosEnMatriz[f][c] = Color.cyan;
+					this.cambiosEnMatriz[f][c] = FabricaColores.getFabricaColores().generarColores("AguaBase");
 
 
 				}
@@ -265,7 +265,7 @@ public abstract class Jugador extends Observable {
 			for (int j = 0; j < 10; j++) {
 				if (this.matriz[i][j] == null) {
 					this.matriz[i][j] = new CasillaDeJuego(this.esJ1, new Posicion(i,j));
-					this.cambiosEnMatriz[i][j] = Color.cyan;
+					this.cambiosEnMatriz[i][j] = FabricaColores.getFabricaColores().generarColores("AguaBase");
 
 				}
 			}
