@@ -63,6 +63,28 @@ public class GestorInputs {
 		}
 	}
 	
+	public void esperarInputDeBoton() {
+		
+		
+		this.aceptaInput = true;
+		this.filaSelec = -1;
+		this.botonPulsado = -1;
+		
+
+		
+		
+		while (this.botonPulsado != -1) {
+			try {
+				Thread.sleep(100);
+				if (this.filaSelec != -1) {
+					this.filaSelec = -1;
+					this.aceptaInput = true;
+				}
+				
+			} catch (InterruptedException e) {}
+		}
+	}
+	
 	public void esperarInput() {
 		this.aceptaInput = true;
 		this.filaSelec = -1;

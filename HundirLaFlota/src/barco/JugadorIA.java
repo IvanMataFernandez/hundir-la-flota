@@ -454,8 +454,8 @@ public class JugadorIA extends Jugador {
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
 		
-		res = jHu.dispararEn(pPos);
-			
+		res = super.dispararAlOtro(pPos);
+		
 		if (res[0]) {
 			
 				
@@ -552,6 +552,12 @@ public class JugadorIA extends Jugador {
 
 		
 		return res[1];
+	}
+
+
+	public void procesarCompras() {
+
+		// NADA LUEGO AÑADIR COMPRAS
 	}
 		
 	

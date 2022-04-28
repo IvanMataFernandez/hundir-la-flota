@@ -7,6 +7,7 @@ public class Main {
 	public static void main (String args[]) throws InterruptedException {
 		
 
+		// IA DEBE SABER DISPARAR MISILES
 	
 		
 		Jugadores listaJugador = Jugadores.getJugadores();	
@@ -19,6 +20,8 @@ public class Main {
 				listaJugador.jugadorActualDispara();
 				listaJugador.cambiarJugador();
 				
+				
+	
 				
 			}
 

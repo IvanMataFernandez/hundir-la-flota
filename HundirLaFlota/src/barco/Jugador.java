@@ -12,6 +12,8 @@ public abstract class Jugador extends Observable {
 	private Armamento equipadoCon;
 	private Radar radar;
 	private int numEscudos;
+	private int numMisiles;
+	private int dinero;
 	
 	public Jugador (boolean pJ1) {
 		this.esJ1 = pJ1;
@@ -19,9 +21,37 @@ public abstract class Jugador extends Observable {
 		this.cambiosEnMatriz = new Color[10][10];
 		this.barcosConVida = 10;
 		this.numEscudos = 5;
+		this.numMisiles = 3;
 		this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);
 		this.radar = (Radar) FabricaArmamento.getFabricaArmamento().generarArmamento(0);
+		this.dinero = 5000; // LUEGO SE PUEDE CAMBIAR
 	}
+	
+/*	protected Armamento obtArmamentoAct() {
+		return this.equipadoCon;
+	} */
+	
+	
+	protected void cambiarABomba() {
+		if (this.equipadoCon instanceof Misil) {
+			this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);		
+		}
+		
+	}
+	
+	protected void cambiarArmamento() {
+		
+		if (this.equipadoCon instanceof Bomba) {
+			this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(2);
+		} else {
+			this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);		
+		}
+		
+	}
+	
+	protected int obtMisiles() {return this.numMisiles;}
+	
+	protected boolean tieneMisiles() {return this.numMisiles != 0;}
 	
 	protected boolean ponerEscudoEn(Posicion pos) {
 		boolean res;
@@ -76,6 +106,13 @@ public abstract class Jugador extends Observable {
 	}
 	
 	public abstract void procesarAcciones() throws ExcepcionFinDePartida;
+
+	public abstract void colocarBarcos();
+
+	public abstract void procesarCompras();
+	
+	
+	protected int getDinero() {return this.dinero;}
 	
 	public void actualizarCambios() {
 		
@@ -86,7 +123,6 @@ public abstract class Jugador extends Observable {
 	}
 	
 
-	public abstract void colocarBarcos();
 	
 	
 	
@@ -276,9 +312,32 @@ public abstract class Jugador extends Observable {
 	public boolean haDisparadoAhi(int pF, int pC) {return this.matriz[pF][pC].disparado();}
 	
 	
-	public boolean[] dispararEn(Posicion pPos) {
+	
+	public boolean[] dispararAlOtro(Posicion pPos) {
+		
+		boolean[] res;
+		
+		if (this.esJ1) {
+			res = Jugadores.getJugadores().getJugadorIA().dispararEn(pPos, this.equipadoCon);
+		} else {
+			res = Jugadores.getJugadores().getJugadorHumano().dispararEn(pPos, this.equipadoCon);
+			
+		}
+		
+		if (this.equipadoCon instanceof Misil) {
+			this.numMisiles--;
+		}
+		
+		return res;
+		
+	}
+	
+	public boolean[] dispararEn(Posicion pPos, Armamento pTiro) {
 
-		return this.equipadoCon.usar(this.matriz, this.cambiosEnMatriz, pPos);
+		
+
+		
+		return pTiro.usar(this.matriz, this.cambiosEnMatriz, pPos);
 		
 	
 		

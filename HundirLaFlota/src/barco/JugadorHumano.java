@@ -20,12 +20,13 @@ public class JugadorHumano extends Jugador {
 		boolean usoRadar = false;
 		boolean atkYNoDef = true;
 		boolean res;
+		boolean bombaYNoMisil = true;
 		
 		Posicion pos;
 		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
 		GestorInputs inputs = GestorInputs.getGestor();
 		
-		textoYAudio.setBoton(3, "ocultar" );
+		super.cambiarABomba();
 
 		
 		if (super.tieneRadar()) {
@@ -55,6 +56,15 @@ public class JugadorHumano extends Jugador {
 
 				
 		}
+		
+		if (super.tieneMisiles()) {
+			textoYAudio.setBoton(3, "Cambiar a misiles (Restantes: "+super.obtMisiles()+")" );
+			
+		} else {
+			textoYAudio.setBoton(3, "ocultar" );
+
+			
+		}
 			
 
 			
@@ -62,6 +72,10 @@ public class JugadorHumano extends Jugador {
 		
 		
 		while (!valido) {
+			
+			
+			
+			
 			textoYAudio.actualizarCambios();
 			inputs.esperarInput();
 			
@@ -81,7 +95,23 @@ public class JugadorHumano extends Jugador {
 
 					}
 					
+				} else if (super.tieneMisiles() && inputs.getBotonPulsado() == 3){
+					
+					if (bombaYNoMisil) {
+						textoYAudio.setTexto("Equipando con misil");
+						textoYAudio.setBoton(3,"Cambiar a bombas" );	
+						
+					} else {
+						textoYAudio.setTexto("Equipando con bomba");
+						textoYAudio.setBoton(3, "Cambiar a misiles (Restantes: "+super.obtMisiles()+")" );
+					}
+					super.cambiarArmamento();
+					bombaYNoMisil = !bombaYNoMisil;
+					
+					
 				} else {
+					
+				
 					
 					if (super.tieneRadar() && !usoRadar) {usoRadar = this.usoRadar();}
 					
@@ -96,7 +126,15 @@ public class JugadorHumano extends Jugador {
 			} else {
 				
 				if (atkYNoDef) {
-					valido = this.tiroDirecto();					
+					valido = this.tiroDirecto();	
+					
+					if (!bombaYNoMisil && !super.tieneMisiles() && !valido) { // Si se tiro misil, se encadena y no quedan misiles, cambiar a bombas
+						textoYAudio.setTexto("No te quedan misiles, cambiando a bombas");
+						textoYAudio.setBoton(3, "ocultar" );
+						super.cambiarABomba();
+
+					}
+					
 				} else {
 					res = this.ponerEscudos();
 					
@@ -223,7 +261,7 @@ public class JugadorHumano extends Jugador {
 				textoYAudio.setAudio("error");
 
 			} else {
-				res = jIA.dispararEn(new Posicion(filaSelec, colSelec));
+				res = super.dispararAlOtro(new Posicion(filaSelec, colSelec));
 				
 
 				if (res[0]) {
@@ -443,6 +481,76 @@ public class JugadorHumano extends Jugador {
 		super.actualizarCambios();
 	
 		
+		
+	}
+
+
+
+	public void procesarCompras() {
+		
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		int boton = -1;
+		
+		while (boton != 2 ) {
+			textoYAudio.setTexto("¿Qué desea hacer? Dinero: "+super.getDinero());
+			textoYAudio.setBoton(0, "Reparar barco");
+			textoYAudio.setBoton(1, "Acceder tienda");
+			textoYAudio.setBoton(2, "Pasar a disparar");
+			textoYAudio.setBoton(3, "ocultar");
+			
+			textoYAudio.actualizarCambios();
+			
+			inputs.esperarInputDeBoton();
+			
+			if (inputs.getBotonPulsado() == 0) {
+				this.menuReparar();
+				
+				
+			} else if (inputs.getBotonPulsado() == 1) {
+				this.menuTienda();
+			}
+
+			
+		}
+		
+		
+		
+		
+		
+		/*
+		 listaJugador.procesarCompras();
+		 
+		  
+		 Menu inicial:
+		 0 -> Reparar Barco
+		 1 -> Acceder tienda
+		 2 -> Pasar a Disparar
+		 
+		 Reparar BArco:
+		 0 -> volver
+		 
+		 Tienda:
+		 0 -> Misil 
+		 1 -> Radar
+		 2 -> Escudo
+		 3 -> volver 
+		  
+		 */
+		
+		
+	}
+	
+	// FALTAN ESTOS MENUS
+	
+	private void menuReparar() {
+		
+		
+	}
+	
+	
+	
+	private void menuTienda() {
 		
 	}
 	

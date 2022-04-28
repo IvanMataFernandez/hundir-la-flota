@@ -41,6 +41,11 @@ public class ParteBarco {
 		}
 	}
 	
+	
+	public void marcarComoTocado(Color[][] pMatriz) {
+		this.cas.marcarCasilla(pMatriz);
+	}
+	
 	public boolean[] tocarBarco(Armamento pTiro, Color[][] pMatriz) {
 		
 		// Post: 00 --> Tocado | 01 -> Hundido | 10 -> Escudo Bloquea | 11 -> Escudo Se Destruye

@@ -33,6 +33,10 @@ public class Jugadores {
 		this.getJugadorActual().procesarAcciones();
 	}
 	
+	public void jugadorActualCompra() {
+		this.getJugadorActual().procesarCompras();
+	}
+	
 
 	
 	public void jugadoresColocanBarcos() {

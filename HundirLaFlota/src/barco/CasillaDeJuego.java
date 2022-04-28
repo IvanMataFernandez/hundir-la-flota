@@ -43,6 +43,8 @@ public class CasillaDeJuego {
 	
 	public boolean visible() {return this.esDeHumano || this.visible;}
 	
+	public void marcarCasilla(Color[][] pMatriz) {this.visible = true; this.disparado = true; pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoTocado");}
+	
 	public boolean seVio() {return this.visible;}
 	
 	public void marcarVisible() {this.visible = true;}

@@ -10,16 +10,21 @@ public abstract class Barco {
 	private Escudo escudo;
 	private ArrayList<ParteBarco> trozosDeBarcos;
 	private int longitud;
+	private int precioPorCasilla;
 	
 	
 	
-	
-	public Barco(int pLong, String pNombre) {
+	public Barco(int pLong, String pNombre, int pPrecioPorCasilla) {
 		this.nombre = pNombre;
 		this.trozosDeBarcos = new ArrayList<ParteBarco>();
 		this.longitud = pLong; // NO EN USO POR AHORA
 		this.escudo = null;
+		this.precioPorCasilla = pPrecioPorCasilla;
 	}
+	
+	
+	
+	
 	
 	public boolean ponerEscudo(Escudo pEsc, Color[][] pMatriz) {
 		
@@ -64,7 +69,7 @@ public abstract class Barco {
 
 	
 	
-
+	private void hundirBarco(Color[][] pMatriz) {this.trozosDeBarcos.stream().forEach(p -> p.marcarComoTocado(pMatriz));}
 	
 	public void addParteBarco(ParteBarco p) {this.trozosDeBarcos.add(p);} // Asignar casillas al barco tras inicializarlo.
 	
@@ -90,11 +95,20 @@ public abstract class Barco {
 		boolean[] res = new boolean[2];
 		
 		if (!this.conEscudo()) {
-			res[0] = false;
-			this.trozosDeBarcos.get(pIDPosBarco).marcarComoDisparado();
-		
 			
-			res[1] = this.estaHundido();
+			if (pTiro instanceof Bomba)  {
+				res[0] = false;
+				this.trozosDeBarcos.get(pIDPosBarco).marcarComoDisparado();
+			
+				
+				res[1] = this.estaHundido();
+			} else {
+				this.hundirBarco(pMatriz);
+				
+				res[1] = true;
+			}
+			
+
 			
 		} else {
 			res[0] = true;

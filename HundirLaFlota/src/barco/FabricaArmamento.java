@@ -27,7 +27,8 @@ public class FabricaArmamento {
 				arm = new Bomba();
 				break;
 			case 2:
-				break; // MISIL NO IMPLEMENTADO
+				arm = new Misil();
+				break; 
 			case 3:
 				arm = new Escudo();
 			default:	

@@ -2,5 +2,5 @@ package barco;
 
 public class Fragata extends Barco {
 
-	public Fragata() {super(1, "Fragata");}
+	public Fragata() {super(1, "Fragata", -1);}
 }
