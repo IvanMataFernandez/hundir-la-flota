@@ -26,16 +26,7 @@ public class Controlador implements MouseListener{
 
 	public void mouseClicked(MouseEvent e) {
 
-		if (e.getSource() instanceof CasillaDePantalla) {
-			// Se pincha en casilla de tablero
 
-			CasillaDePantalla cas = (CasillaDePantalla) e.getSource();
-			GestorInputs.getGestor().cogerInput(cas);
-			
-		} else {
-			// Se pincha en botón
-			GestorInputs.getGestor().cogerInput((Boton) e.getSource());
-		}
 	
 	}
 
@@ -47,6 +38,19 @@ public class Controlador implements MouseListener{
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		
+		
+		if (e.getSource() instanceof CasillaDePantalla) {
+			// Se pincha en casilla de tablero
+
+			CasillaDePantalla cas = (CasillaDePantalla) e.getSource();
+			GestorInputs.getGestor().cogerInput(cas);
+			
+		} else {
+			// Se pincha en botón
+			GestorInputs.getGestor().cogerInput((Boton) e.getSource());
+		}
+		
+		
 	}
 
 	@Override
@@ -56,6 +60,7 @@ public class Controlador implements MouseListener{
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+
 		
 	}
 

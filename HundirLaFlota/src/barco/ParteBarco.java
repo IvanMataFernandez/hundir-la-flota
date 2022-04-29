@@ -41,6 +41,9 @@ public class ParteBarco {
 		}
 	}
 	
+	public void visibilizarHundido(Color[][] pMatriz) {
+		this.cas.visibilizarHundido(pMatriz);
+	}
 	
 	public void marcarComoTocado(Color[][] pMatriz) {
 		this.cas.marcarCasilla(pMatriz);
@@ -61,13 +64,13 @@ public class ParteBarco {
 			
 			// SI EL ESCUDO FUE DESTRUIDO, YA SE ACTUALIZO EN BARCO.TOCAR()
 		
-		} else {
+		} else if (!res[1]) {
 			
 			pMatriz[this.cas.pos().getFila()][this.cas.pos().getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoTocado"); // MARCAR COMO DAÑADO
 		
 			
 			
-		}
+		} // SI EL BARCO FUE HUNDIDO YA SE ACTUALIZO EL COLOR
 		
 		
 		return res;

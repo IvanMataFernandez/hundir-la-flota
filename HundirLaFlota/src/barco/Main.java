@@ -7,7 +7,7 @@ public class Main {
 	public static void main (String args[]) throws InterruptedException {
 		
 
-		// IA DEBE SABER DISPARAR MISILES
+	
 	
 		
 		Jugadores listaJugador = Jugadores.getJugadores();	
@@ -32,11 +32,11 @@ public class Main {
 
 			
 			if (excepcion.ganoJ1()) {
-				// GANA J1!
+				TextoYAudio.getInstancia().setTexto("Jugador Humano gana");
 			} else {
-				// GANA IA!
+				TextoYAudio.getInstancia().setTexto("Jugador IA gana");
 			}
-			
+			TextoYAudio.getInstancia().actualizarCambios();
 		}
 		
 		try {

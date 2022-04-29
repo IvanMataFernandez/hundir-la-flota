@@ -32,6 +32,11 @@ public abstract class Jugador extends Observable {
 	} */
 	
 	
+	protected boolean getValorEscudoRadar() {
+		return this.radar.getValorEscudo();
+	}
+	
+	
 	protected void cambiarABomba() {
 		if (this.equipadoCon instanceof Misil) {
 			this.equipadoCon = FabricaArmamento.getFabricaArmamento().generarArmamento(1);		

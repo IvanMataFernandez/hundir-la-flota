@@ -25,8 +25,21 @@ public class CasillaDeJuego {
 	}
 	
 	
+	
+	
+	
+	
 	public void asignarParteBarco (ParteBarco pB) {this.trozoDeBarco = pB;}
 	
+	
+	
+	public boolean barcoReforzadoConEscudo() {
+		// Pre: La casilla tiene un barco sin hundir
+		// Post: Dicho barco tiene escudo o no
+		
+		return this.trozoDeBarco.conEscudo();
+		
+	}
 	
 	public void marcarComoDisparado() {this.disparado = true;}
 
@@ -43,7 +56,10 @@ public class CasillaDeJuego {
 	
 	public boolean visible() {return this.esDeHumano || this.visible;}
 	
-	public void marcarCasilla(Color[][] pMatriz) {this.visible = true; this.disparado = true; pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoTocado");}
+	public void marcarCasilla(Color[][] pMatriz) {this.visible = true; this.disparado = true; pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoHundido");}
+	
+	public void visibilizarHundido(Color[][] pMatriz) {pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoHundido");}
+	
 	
 	public boolean seVio() {return this.visible;}
 	
@@ -68,6 +84,7 @@ public class CasillaDeJuego {
 			if (res[0]) {res[1] = false;} // Transformar la lógica del post de tocarBarco() a la postcondicion de arriba
 			else if (res[1]) {res[0] = true;}
 			else {res[1] = true;}
+					
 		
 		} else {
 			res[0] = false;
@@ -95,12 +112,26 @@ public class CasillaDeJuego {
 	}
 	
 	public Color calcularColorSinTocar() {
-		if (this.trozoDeBarco.conEscudo()) { 
-			return FabricaColores.getFabricaColores().generarColores("BarcoEscudo");
+		
+		if (this.esDeHumano) {
+			if (this.trozoDeBarco.conEscudo()) { 
+				return FabricaColores.getFabricaColores().generarColores("BarcoEscudoDetectado");
+			} else {
+				return FabricaColores.getFabricaColores().generarColores("BarcoDetectado");
+			}
+			
 		} else {
-			return FabricaColores.getFabricaColores().generarColores("BarcoColocado");
+			if (this.trozoDeBarco.conEscudo()) { 
+				return FabricaColores.getFabricaColores().generarColores("BarcoEscudo");
+			} else {
+				return FabricaColores.getFabricaColores().generarColores("BarcoColocado");
+			}	
+			
 		}
-	}
+		
+		
+
+	} 
 
 	
 	

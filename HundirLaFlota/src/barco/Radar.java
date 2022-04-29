@@ -10,12 +10,14 @@ public class Radar implements Armamento {
 	private Posicion pos;
 	private int usos;
 	private Posicion deteccion;
+	private boolean barcoDetectadoConEscudo;
 	
 	public Radar () {
 		
 		this.aleatorio = new Random();
 		this.pos = new Posicion(this.aleatorio.nextInt(10), this.aleatorio.nextInt(10));
 		this.usos = 3; // 3 usos al inicio
+
 	}
 	
 	
@@ -26,13 +28,13 @@ public class Radar implements Armamento {
 	public boolean[] usar (CasillaDeJuego[][] pMatrizA, Color[][] pMatrizB, Posicion pPos) {
 		
 		
-		// Pre: pPos es irrelevante
+		// Pre: pPos es irrelevante, incluido por estar definido como método abstracto en clase madre
 		// Post:  True <--> ENC
 		
 		
 
-
-		int f = Math.max(this.pos.getFila() - 1, 0);
+		int filInic = Math.max(this.pos.getFila() - 1, 0);
+		int f = filInic;
 		int colInic = Math.max(this.pos.getCol() - 1, 0);
 		int colFin = Math.min(this.pos.getCol() + 1, 9);
 		int filFin = Math.min(this.pos.getFila() + 1, 9);
@@ -63,7 +65,9 @@ public class Radar implements Armamento {
 		
 		if (enc[0]) {
 			this.deteccion = new Posicion(f-1, c-1);
+			this.barcoDetectadoConEscudo = pMatrizA[f-1][c-1].barcoReforzadoConEscudo();
 		} else {
+			this.revelearAguas(pMatrizA, pMatrizB, filInic, filFin, colInic, colFin);
 			this.deteccion = null;
 		}
 		
@@ -80,5 +84,40 @@ public class Radar implements Armamento {
 	}
 	
 	public Posicion getPosicion() {return this.pos;}
+	
+	public boolean getValorEscudo() {return this.barcoDetectadoConEscudo;}
+	
+	private void revelearAguas(CasillaDeJuego[][] pMatrizA, Color[][] pMatrizB, int pFilaInic, int pFilaFin, int pColInic, int pColFin) {
+		
+		
+		int f = pFilaInic;
+		int c;
+		
+		while (f <= pFilaFin) {
+			c = pColInic;
+			
+			while (c <= pColFin) {
+				CasillaDeJuego cas = pMatrizA[f][c];
+				if (!cas.seVio()) {
+					cas.marcarComoDisparado();
+					cas.marcarVisible();
+					pMatrizB[f][c] = FabricaColores.getFabricaColores().generarColores("AguaTocada");	
+				}
+
+				
+						
+						
+				
+				c++;
+				
+			}
+			
+			f++;
+		}
+		
+		
+	}
+	
+	
 
 }

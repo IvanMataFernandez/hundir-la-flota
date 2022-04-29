@@ -67,7 +67,7 @@ public abstract class Barco {
 	
 	
 
-	
+	public void visibilizarHundido(Color[][] pMatriz) {this.trozosDeBarcos.stream().forEach(p -> p.visibilizarHundido(pMatriz));}
 	
 	private void hundirBarco(Color[][] pMatriz) {this.trozosDeBarcos.stream().forEach(p -> p.marcarComoTocado(pMatriz));}
 	
@@ -102,6 +102,11 @@ public abstract class Barco {
 			
 				
 				res[1] = this.estaHundido();
+				
+				if (res[1]) {
+					this.visibilizarHundido(pMatriz);
+				}
+				
 			} else {
 				this.hundirBarco(pMatriz);
 				

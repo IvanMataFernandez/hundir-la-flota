@@ -220,12 +220,13 @@ public class JugadorHumano extends Jugador {
 			
 			if (res) {
 				textoYAudio.setTexto("Barco encontrado");
-				Jugadores.getJugadores().getJugadorIA().actualizarCambios();
 			} else {
 				textoYAudio.setTexto("No hay barcos del rival");
-				
-				
 			}
+			
+			Jugadores.getJugadores().getJugadorIA().actualizarCambios();
+
+			
 			val = true;
 		}
 		

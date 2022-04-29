@@ -175,14 +175,57 @@ public class JugadorIA extends Jugador {
 		
 		
 		/* Pre: Turno de IA y ha encontrado un barco que quiere hundir (tocado inicial /= null)
-		        El valor sentidoEnComprobacion decide en que sentido le toca buscar y distancia
-		        a cuantas casillas del origen del tiro está
+		        y el disparo anterior no fue bloqueado por un escudo.
+
 		 
-		 Post: La posicion marcada en cuestion por estas variables si no esta marcada y existe en el tablero
-		       Si esto no ocurre devuelve null actualizando la distancia a 1 de nuevo y cambiando la direccion
-		       del siguiente tiro. Si se devuelve null se volverá a llamar a este metodo inmediatamente hasta
-		       que se de un valor concreto.
-		 
+		 Post: La posición donde quiere disparar si encaja en el sentido actual o null si quiere cambiar sentido
+		       de disparo, para ello calcula la posición con las siguientes variables:
+		       
+		       - La variable tocadoInicial marca en que posición se dañó la primera parte del barco
+		       - La variable sentidoEnComprobación marca el sentido en el que quiere disparar la bomba,
+		         solo puede disparar en la linea horizontal o vertical (y no diagonal) a en la que 
+		         descubrió el barco por primera vez. Los valores posibles de esta variable son
+		         0 (arriba), 1 (derecha), 2 (abajo) o 3 (izquierda).
+		       - La variable distancia marca a cuanta distancia del origen del primer disparo al barco
+		         se debería atacar ahora. 
+		         
+		         
+		         
+		      Con esa información, la IA procede a mirar si la casilla existe en la matriz y no se disparó ahí.
+		      Si se cumple eso, devuelve esa posición. La IA procederá a atacar la posición y actualizar las 
+		      variables anteriores.
+		      
+		      Si no se cumple, la IA no puede disparar en dicha posición (devuelve null)  y decide cambiar el sentido.
+		      
+		      
+		      Las reglas de alteración son las mismas en ambos casos  y dependen de 4 situaciones:
+		      
+		      La IA acierta y hunde el barco --> Hasta que la IA no pegue a otro barco
+		                                         por otra causa este método no será llamado (tocadoInicial = null)
+		                                         
+		      
+		      La IA acierta y daña pero no hunde -> La IA preparará el tiro en este método para (distancia + 1)    
+		                                            La IA ahora conoce la orientación del barco (horiz / vert).                               
+		      
+		      
+		      La IA falla y toca agua ->  Si la IA ya dañó al menos una parte extra del barco en este sentido 
+		                                  (no incluye tiro inicial),  entonces da un giro de 180º al sentido a 
+		                                  disparar (izquierda <--> derecha, arriba <--> abajo)
+		      
+		                                  Si la IA no dañó, y por lo tanto no conoce la orientación del barco, 
+		                                  procede a comprobar la siguiente  dirección que le toca, siendo el orden:
+		                                  arriba -> derecha -> abajo -> izquierda -> arriba
+		      
+		      
+		      La IA acierta pero escudo bloquea -> Debido a que el jugador reforzó el barco con un escudo entre turnos
+		                                           la IA pasará a prioridad 1 (veáse documentación elegirTiro() )
+		                                           e ignorará este método hasta que rompa el escudo y pegue al trozo
+		                                           en su interior. Tras hacer eso, depende de si hunda el barco o no
+		                                           hará el caso correspondiente explicado anteriormente.
+		      
+		        
+		  	
+
 		  
 		  
 		 */
@@ -281,25 +324,54 @@ public class JugadorIA extends Jugador {
 		return p;
 	}
 	
+	
+	
+	private void equiparMisil(boolean pSeguro) {
+		
+		
+		if (super.tieneMisiles() && (pSeguro || this.generador.nextInt(10) == 0)) { // Equipar misil si posible
+			super.cambiarArmamento();
+			TextoYAudio.getInstancia().setTexto("¡IA equipa misil!");
+			TextoYAudio.getInstancia().actualizarCambios();
+			this.esperar(1000);
+		}
+		
+		
+		
+	}
+	
 	private Posicion elegirTiro() {
 		
 		/* Pre: Turno de IA y necesita tirar un proyectil
-		   Post: Posicion para disparar, calculado por:
+		   Post: Posicion para disparar.
 		   
-		   Si la IA no había encontrado un barco sin hundir para tirar lanza a una casilla sin marcar al azar
-		   Si la IA había encontrado un barco sin hundir:
-		   		Trata de hundirlo lanzando ataques en los 4 sentidos a la casilla a la que se le pego al barco
-		   		por primera vez
-		   		
-		   		El sentido en el que decide empezar a atacar es aleatorio, pero sigue un patrón circular:
-		   		arriba --> derecha --> abajo --> izquierda
-		   		
-		   		La IA procederá a atacar el barco en el sentido que le toque. 
-		   		Si toca el barco en el sentido actual avanza una posición en ese
-		   		Si llega a una esquina del tablero o a una casilla ya marcada cambia de dirección
-		   		Si el barco es hundido procederá a lanzar ataques aleatorios de nuevo hasta tocar un barco
- 
+		   El cálculo de posición de disparo de la IA es algo complejo y se diferencia en 4 prioridades, de más
+		   alta a más baja:
+	       
+	       * Prioridad 1 -> La IA disparó a un barco con escudo en el disparo anterior (no influye si lo rompió o no)
+
+	        Lla IA dispara una bomba a la misma casilla que en el disparo anterior, rompiendo el escudo
+	        o dañando al barco que está en esa posición
+	        
+	       * Prioridad 2 -> La IA actualmente tiene un barco tocado y no hundido.
+	                       
+	        La IA usa el método elegirTiroPreciso() para lanzar bombas a casillas adyecentes al barco. 
+	        Es demasiado complejo para entrar en detalle (véase la documentación de dicho método)
+	        
+	       * Prioridad 3 -> La IA conoce la posición de un barco por radar encontrado en este turno o uno previo
+	       
+	        La IA disparará un misil (si le quedan) a la casilla indicada para tirar hundir todo el barco de golpe. 
+	        Si el barco está reforzado con escudo o no tiene misiles, tirará una bomba en su lugar
+	           
+		   * Prioridad 4 -> No prioridad 1, 2 o 3. (La IA está ciega sin info por parte de radar o tiros anteriores)
+		   
+		    La IA generá dos ints [0,9] para determinar a donde disparar. Si la casilla fue ya disparada, vuelve
+		    a generar otro par hasta que encuentre un espacio donde tirar. Si la IA dispone de misiles, tiene
+		    un 10% de probabilidades de usarlo en vez de una bomba.
+		   
+	
 		 */
+		
 		
 		
 		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
@@ -307,6 +379,10 @@ public class JugadorIA extends Jugador {
 		int col=-1;
 		boolean valido = false;
 		Posicion p = null;
+		
+		
+		super.cambiarABomba(); // POR DEFECTO USAR BOMBA
+ 
 		
 		if (this.escudoTocado != null) {  // Pegar al escudo otra vez
 			
@@ -327,7 +403,12 @@ public class JugadorIA extends Jugador {
 			
 		} else if (this.detectoConRadar) {    // Tiro usando la información del radar obtenida
 			this.detectoConRadar = false;
-						
+		    
+			if (!super.getValorEscudoRadar()) {
+				this.equiparMisil(true);
+			}
+			
+			
 			p = super.getDeteccionRadar();
 			
 
@@ -335,6 +416,7 @@ public class JugadorIA extends Jugador {
 		} else {  // Tiro al azar sin info
 			
 			
+			this.equiparMisil(false);
 
 			
 			while (!valido) {               
@@ -379,7 +461,7 @@ public class JugadorIA extends Jugador {
 		
 		
 		
-		if (!this.detectoConRadar && super.tieneRadar() && this.generador.nextInt(10) == 0) {
+		if (!this.detectoConRadar && super.tieneRadar() && this.generador.nextInt(1) == 10) {
 			super.moverRadar();
 			
 			
@@ -391,8 +473,9 @@ public class JugadorIA extends Jugador {
 				TextoYAudio.getInstancia().setTexto("¡IA usa radar y encuentra un barco!");
 			} else  {
 				TextoYAudio.getInstancia().setTexto("IA usa radar pero no encuentra nada...");
-
 			}
+			
+			Jugadores.getJugadores().getJugadorHumano().actualizarCambios();
 			
 			TextoYAudio.getInstancia().actualizarCambios();
 			this.esperar(1000);
