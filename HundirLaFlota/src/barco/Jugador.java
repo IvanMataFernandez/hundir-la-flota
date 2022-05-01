@@ -33,8 +33,55 @@ public abstract class Jugador extends Observable {
 	
 	
 	protected boolean getValorEscudoRadar() {
-		return this.radar.getValorEscudo();
+		// Pre: La IA invoca este método y su radar contiene la posición de un barco rival.
+		// Post: La posicion detectada con el radar lleva escudo.
+		
+		return Jugadores.getJugadores().getJugadorHumano().tieneEscudoEn(this.radar.getDeteccion());
 	}
+	
+	
+	public boolean puedeHaberBarcoAhi(Posicion pPos) {
+		// Pre: Método invocado por IA (hija) a Jugador Humano (madre), quiere disparar de forma aleatoria en pPos
+		// Post: True --> El disparo es un movimiento inteligente, es posible que haya
+		//                barco ahí
+		//      False --> El disparo garantiza agua al haber un barco descubierto en 
+		//                una de las casillas adyecentes, se marca como disparado la casilla
+		//                para que la IA no vuelva ahí
+		
+		
+		int fI = Math.max(pPos.getFila()-1, 0); // Fila inicial de bucle
+		int fF = Math.min(pPos.getFila()+1, 9); // Fila final de bucle
+		int cI = Math.max(pPos.getCol()-1, 0); // Columna inicial de bucle
+		int cF = Math.min(pPos.getCol()+1, 9); // Columna final del bucle
+		int f = fI;
+		int c = -1;
+		boolean posible = true;
+		
+		while (!(f > fF) && posible) {
+			c = cI;
+			
+			while (!(c > cF) && posible) {
+				
+				
+				// Seguir mientras no disparado O no hay barco      
+				
+				posible = !this.matriz[f][c].disparado() || !this.matriz[f][c].hayBarco();
+				if (!posible) {this.matriz[pPos.getFila()][pPos.getCol()].marcarComoDisparado();} // Si el tiro no es inteligente, marcar
+
+
+				c++;
+			}
+			f++;
+		}
+		
+		
+		                                                         // como que ya se tiro para no volver aqui
+		
+		return posible;
+		
+	}
+	
+	
 	
 	
 	protected void cambiarABomba() {
@@ -318,6 +365,10 @@ public abstract class Jugador extends Observable {
 	
 	
 	
+	public boolean hayBarcoDisparadoAhi(int pF, int pC) {
+		return this.haDisparadoAhi(pF, pC) && this.matriz[pF][pC].hayBarco();
+	}
+	
 	public boolean[] dispararAlOtro(Posicion pPos) {
 		
 		boolean[] res;
@@ -346,6 +397,12 @@ public abstract class Jugador extends Observable {
 		
 	
 		
+		
+	}
+	
+	
+	public boolean tieneEscudoEn(Posicion pPos) {
+		return this.matriz[pPos.getFila()][pPos.getCol()].barcoReforzadoConEscudo();
 		
 	}
 	

@@ -12,6 +12,7 @@ public class JugadorIA extends Jugador {
 	private boolean detectoConRadar;
 	private boolean conoceSentidoDeBarco;
 	private int sentidoEnComprobacion;
+	private int sentidoTocadoInicial;
 	private int distancia;
 	
 	public JugadorIA() {
@@ -28,7 +29,6 @@ public class JugadorIA extends Jugador {
 
 	public void colocarBarcos() {
 
-		// FALTA ESTO
 		
 	   	 int[] bConRes = new int[4]; // barcos concretos restantes (de 4,3,2 y 1)
 	   	 int tamSelec = 3; // tamaño del barco que se quiere poner
@@ -195,12 +195,19 @@ public class JugadorIA extends Jugador {
 		      Si se cumple eso, devuelve esa posición. La IA procederá a atacar la posición y actualizar las 
 		      variables anteriores.
 		      
-		      Si no se cumple, la IA no puede disparar en dicha posición (devuelve null)  y decide cambiar el sentido.
+		      Si no se cumple, la IA no puede disparar en dicha posición (devuelve null).
+		    
+		      * Si la causa de eso fue que ya el barco fue tocado ahí, se suma uno a la distancia total y 
+		        se atacará la siguiente casilla
+		      
+		      * Si la causa de eso fue que no hay espacio en la matriz o se tocó agua, se cambiará la dirección
+		        de ataque (usando la misma lógica que en la que cuando la IA ataca y toca agua, explicado más abajo),
+		        reseteando la distancia a 1.
 		      
 		      
-		      Las reglas de alteración son las mismas en ambos casos  y dependen de 4 situaciones:
+		      Si se puede atacar, tras el ataque pueden ocurrir 4 cosas que influirán en las siguientes llamadas:
 		      
-		      La IA acierta y hunde el barco --> Hasta que la IA no pegue a otro barco
+		      La IA acierta y hunde el barco --> Hasta que la IA no toque a otro barco
 		                                         por otra causa este método no será llamado (tocadoInicial = null)
 		                                         
 		      
@@ -225,7 +232,18 @@ public class JugadorIA extends Jugador {
 		      
 		        
 		  	
-
+             Existe un caso crítico extra, si el humano decide reparar el barco mientras que la IA lo está hundiendo, para
+             solventar esto la IA comprueba antes de cada disparo si el barco fue reparado, si lo fue pueden ocurrir dos cosas:
+             
+             La IA no conoce todavía la orientación del barco -> IA procede a disparar la casilla inicial que tocó y el resto se hace igual
+             
+             La IA conoce la orientación del barco -> IA procede a atacar el barco en el primer sentido acertado que hizo, luego
+                                                      da vuelta de 180º y acaba de hundirlo atacando por el sentido contrario.
+                                                                 
+                                                                 
+             Si se combinase REPARACION y ESCUDO, entonces la IA rompería el escudo y dañaría dicho trozo del barco fuera de este método 
+             (prioridad 1) y tras darse cuenta de que el barco se arregló, volvería a atacar el barco usando la lógica de "La IA conoce
+             la orientación del barco" del punto anterior.                                              
 		  
 		  
 		 */
@@ -233,6 +251,13 @@ public class JugadorIA extends Jugador {
 		Posicion p = null;
 		JugadorHumano jHu = Jugadores.getJugadores().getJugadorHumano();
 
+		
+		if (!jHu.haDisparadoAhi(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()))  {
+			this.distancia = 0;
+			if (this.conoceSentidoDeBarco) {
+				this.sentidoEnComprobacion = this.sentidoTocadoInicial;
+			}
+		} // Este IF mira si el barco que está hundiendo en el momento fue reparado por el Humano
 		
 		
 		switch (this.sentidoEnComprobacion) {
@@ -243,7 +268,11 @@ public class JugadorIA extends Jugador {
 					p = new Posicion(this.tocadoInicialDeBarco.getFila()-this.distancia, this.tocadoInicialDeBarco.getCol());
 					this.distancia++;
 
-				} else {
+				} else if (this.tocadoInicialDeBarco.getFila() - this.distancia >= 0 && jHu.hayBarcoDisparadoAhi(this.tocadoInicialDeBarco.getFila()-distancia, this.tocadoInicialDeBarco.getCol())) {
+					this.distancia++;
+					
+				} else {	
+					
 					
 					if (this.conoceSentidoDeBarco) {
 						this.sentidoEnComprobacion = 2;
@@ -264,6 +293,9 @@ public class JugadorIA extends Jugador {
 					p = new Posicion(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()+distancia);
 					this.distancia++;
 
+				} else if (this.tocadoInicialDeBarco.getCol() + this.distancia <= 9 && jHu.hayBarcoDisparadoAhi(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()+distancia)) {	
+					this.distancia++;
+					
 				} else {
 					
 					if (this.conoceSentidoDeBarco) {
@@ -285,6 +317,9 @@ public class JugadorIA extends Jugador {
 					p = new Posicion(this.tocadoInicialDeBarco.getFila()+this.distancia, this.tocadoInicialDeBarco.getCol());
 					this.distancia++;
 
+				} else if (this.tocadoInicialDeBarco.getFila() + this.distancia <= 9 && jHu.hayBarcoDisparadoAhi(this.tocadoInicialDeBarco.getFila()+distancia, this.tocadoInicialDeBarco.getCol())) {
+					this.distancia++;
+					
 				} else {
 					
 					if (this.conoceSentidoDeBarco) {
@@ -304,6 +339,9 @@ public class JugadorIA extends Jugador {
 					p = new Posicion(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()-distancia);
 					this.distancia++;
 
+				} else if (this.tocadoInicialDeBarco.getCol() - this.distancia >= 0 && jHu.hayBarcoDisparadoAhi(this.tocadoInicialDeBarco.getFila(), this.tocadoInicialDeBarco.getCol()-distancia)) {
+					this.distancia++;
+					
 				} else {
 
 					if (this.conoceSentidoDeBarco) {
@@ -329,7 +367,7 @@ public class JugadorIA extends Jugador {
 	private void equiparMisil(boolean pSeguro) {
 		
 		
-		if (super.tieneMisiles() && (pSeguro || this.generador.nextInt(10) == 0)) { // Equipar misil si posible
+		if (super.tieneMisiles() && (pSeguro || this.generador.nextInt(20) == 0)) { // Equipar misil si posible
 			super.cambiarArmamento();
 			TextoYAudio.getInstancia().setTexto("¡IA equipa misil!");
 			TextoYAudio.getInstancia().actualizarCambios();
@@ -366,8 +404,9 @@ public class JugadorIA extends Jugador {
 		   * Prioridad 4 -> No prioridad 1, 2 o 3. (La IA está ciega sin info por parte de radar o tiros anteriores)
 		   
 		    La IA generá dos ints [0,9] para determinar a donde disparar. Si la casilla fue ya disparada, vuelve
-		    a generar otro par hasta que encuentre un espacio donde tirar. Si la IA dispone de misiles, tiene
-		    un 10% de probabilidades de usarlo en vez de una bomba.
+		    a generar otro par hasta que encuentre un espacio donde tirar. Si la casilla no fue disparada pero
+		    hay un barco visible adyacente a ella, volverá a generar otro par de ints porque sabe que hay agua ahí.
+		    Si la IA dispone de misiles, tiene un 5% de probabilidades de usarlo en vez de una bomba.
 		   
 	
 		 */
@@ -419,13 +458,19 @@ public class JugadorIA extends Jugador {
 			this.equiparMisil(false);
 
 			
-			while (!valido) {               
-				fila = this.generador.nextInt(10);
-				col = this.generador.nextInt(10);
-				valido = !jHu.haDisparadoAhi(fila, col);
+			while (!valido) {
+				while (!valido) {               
+					fila = this.generador.nextInt(10);
+					col = this.generador.nextInt(10);
+					valido = !jHu.haDisparadoAhi(fila, col);
+				}
+				
+				p = new Posicion(fila,col);
+				valido = Jugadores.getJugadores().getJugadorHumano().puedeHaberBarcoAhi(p);
+
 			}
 			
-			p = new Posicion(fila,col);
+
 			
 		}
 		
@@ -461,7 +506,7 @@ public class JugadorIA extends Jugador {
 		
 		
 		
-		if (!this.detectoConRadar && super.tieneRadar() && this.generador.nextInt(1) == 10) {
+		if (this.escudoTocado == null && this.tocadoInicialDeBarco == null && !this.detectoConRadar && super.tieneRadar() && this.generador.nextInt(10) == 1) {
 			super.moverRadar();
 			
 			
@@ -578,10 +623,13 @@ public class JugadorIA extends Jugador {
 				if (this.tocadoInicialDeBarco == null) { // Si toco un barco lanzando al azar y no hundio, centrar los siguientes tiros en el
 					this.conoceSentidoDeBarco = false;
 					this.tocadoInicialDeBarco = pPos;
+					this.sentidoTocadoInicial = -1;
 					this.sentidoEnComprobacion = this.generador.nextInt(4);
 					this.distancia = 1;
-				} else {
+					
+				} else if (!this.conoceSentidoDeBarco) {
 					this.conoceSentidoDeBarco = true;
+					this.sentidoTocadoInicial = this.sentidoEnComprobacion;
 				}
 				
 				if (this.escudoTocado != null) { // Si estaba tirando a la misma casilla para romper el escudo, ya lo hizo

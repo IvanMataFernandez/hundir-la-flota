@@ -10,7 +10,6 @@ public class Radar implements Armamento {
 	private Posicion pos;
 	private int usos;
 	private Posicion deteccion;
-	private boolean barcoDetectadoConEscudo;
 	
 	public Radar () {
 		
@@ -65,7 +64,6 @@ public class Radar implements Armamento {
 		
 		if (enc[0]) {
 			this.deteccion = new Posicion(f-1, c-1);
-			this.barcoDetectadoConEscudo = pMatrizA[f-1][c-1].barcoReforzadoConEscudo();
 		} else {
 			this.revelearAguas(pMatrizA, pMatrizB, filInic, filFin, colInic, colFin);
 			this.deteccion = null;
@@ -85,7 +83,6 @@ public class Radar implements Armamento {
 	
 	public Posicion getPosicion() {return this.pos;}
 	
-	public boolean getValorEscudo() {return this.barcoDetectadoConEscudo;}
 	
 	private void revelearAguas(CasillaDeJuego[][] pMatrizA, Color[][] pMatrizB, int pFilaInic, int pFilaFin, int pColInic, int pColFin) {
 		
