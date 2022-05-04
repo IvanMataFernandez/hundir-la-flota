@@ -584,30 +584,16 @@ public class JugadorHumano extends Jugador {
 				precio = super.precioDeReparacionDeBarco(f, c);
 				
 				if (precio > 0 && precio <= super.getDinero()) {
-					textoYAudio.setTexto("Coste de reparación: "+precio+ " | Tu dinero: "+super.getDinero());
-					
-					textoYAudio.setBoton(0, "Reparar");
-					textoYAudio.setBoton(1, "No reparar");
-					
-					textoYAudio.actualizarCambios();
-					
-					inputs.esperarInputDeBoton();
-					
-					
-					if (inputs.getBotonPulsado() == 0) {
-					
+	
+					if (this.confirmarReparacion(precio)) {
 						super.repararBarco(f, c);
 						super.bajarDineroEn(precio);
 						super.actualizarCambios();
-
-
-
-						
-					} 
+					}
 					
-
-					
-
+					textoYAudio.setTexto("¿Qué barco desea reparar? Dinero: "+super.getDinero());
+					textoYAudio.setBoton(0, "Volver");
+					textoYAudio.setBoton(1, "ocultar");
 					
 				} else if (precio == -1) {
 					textoYAudio.setTexto("No hay barco para reparar ahí ");
@@ -619,13 +605,9 @@ public class JugadorHumano extends Jugador {
 					textoYAudio.setTexto("No se puede reparar un barco hundido.");
 					
 				}
-				textoYAudio.actualizarCambios();
 
-				super.esperar(1000);
 				
-				textoYAudio.setTexto("¿Qué barco desea reparar? Dinero: "+super.getDinero());
-				textoYAudio.setBoton(0, "Volver");
-				textoYAudio.setBoton(1, "ocultar");
+
 				
 				
 				
@@ -638,9 +620,220 @@ public class JugadorHumano extends Jugador {
 
 	}
 	
-	private void menuTienda() {
+	
+	private boolean confirmarReparacion (int pPrecio) {
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		boolean reparacion;
+		
+		textoYAudio.setTexto("Coste de reparación: "+pPrecio+ " | Tu dinero: "+super.getDinero());
+		
+		textoYAudio.setBoton(0, "Reparar");
+		textoYAudio.setBoton(1, "No reparar");
+		
+		textoYAudio.actualizarCambios();
+		
+		inputs.esperarInputDeBoton();
+		
+	    reparacion = inputs.getBotonPulsado() == 0;
+
+	    if (reparacion) {
+			textoYAudio.setAudio("construccion");
+	    }
+	    
+	    return reparacion;
+			
+	}
+	
+	
+	private boolean confirmarCompra (int pPrecio, int pPosee, int pStock) {
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		boolean compra;
+		
+		textoYAudio.setTexto("Coste de compra: "+pPrecio+ " | Tu dinero: "+super.getDinero()+" | Tienes: "+pPosee+" | En stock: "+pStock);
+		
+		textoYAudio.setBoton(0, "Comprar");
+		textoYAudio.setBoton(1, "No comprar");
+		textoYAudio.setBoton(2, "ocultar" );
+		textoYAudio.setBoton(3, "ocultar" );
+
+		textoYAudio.actualizarCambios();
+		
+		inputs.esperarInputDeBoton();
+		
+		
+		compra = inputs.getBotonPulsado() == 0;
+		
+		if (compra) {
+			textoYAudio.setAudio("compra");
+		}
+		
+		return compra;
+	
 		
 	}
+	
+	
+	private void menuTienda() {
+
+		Almacen alm = Almacen.getAlmacen();
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		int boton = -1;
+		textoYAudio.setBoton(0,"Comprar Misil (" + alm.precioMisil() + " monedas) ");
+		textoYAudio.setBoton(1,"Comprar Radar (" + alm.precioRadar() + " monedas) ");
+		textoYAudio.setBoton(2,"Comprar Escudo (" + alm.precioEscudo() + " monedas) ");
+		textoYAudio.setBoton(3,"Volver" );
+		textoYAudio.setTexto("¿Qué deseas comprar? Dinero: "+super.getDinero());
+		textoYAudio.actualizarCambios();
+
+		
+		
+		
+		
+		
+		while (boton != 3) {
+			inputs.esperarInputDeBoton();
+
+			boton = inputs.getBotonPulsado();
+			
+			
+			switch (boton) {
+			case 0:
+				
+				if (alm.hayMisiles()) {
+					
+					if (super.getDinero() >= alm.precioMisil()) {
+						
+						if (this.confirmarCompra(alm.precioMisil(), super.obtMisiles(), alm.misilesRestantes())) {
+							super.bajarDineroEn(alm.precioMisil());
+							super.darMisil();
+							alm.consumirMisil();
+						}
+						
+						textoYAudio.setBoton(0,"Comprar Misil (" + alm.precioMisil() + " monedas) ");
+						textoYAudio.setBoton(1,"Comprar Radar (" + alm.precioRadar() + " monedas) ");
+						textoYAudio.setBoton(2,"Comprar Escudo (" + alm.precioEscudo() + " monedas) ");
+						textoYAudio.setBoton(3,"Volver" );
+						textoYAudio.setTexto("¿Qué deseas comprar? Dinero: "+super.getDinero());
+						
+						
+
+						
+					} else {
+						textoYAudio.setTexto("No tienes dinero suficiente para la compra");
+					}
+					
+					
+
+					
+			    } else {textoYAudio.setTexto("No quedan existencias");}
+				
+				textoYAudio.actualizarCambios();
+				break;
+			case 1:
+				
+				
+				if (alm.hayRadares()) {
+					
+					if (super.getDinero() >= alm.precioRadar()) {
+						
+			
+						if (!super.tieneRadar()) {
+							
+							if (this.confirmarCompra(alm.precioRadar(), 0, alm.radaresRestantes())) {
+								super.bajarDineroEn(alm.precioRadar());
+								super.darRadar();
+								super.moverRadar(); // MOVER RADAR PARA QUE PAREZCA QUE SE COMPRÓ OTRO Y SE PONGA A OTRA CASILLA POR DEFECTO
+								alm.consumirRadar();
+								
+							}
+							
+							
+							textoYAudio.setBoton(0,"Comprar Misil (" + alm.precioMisil() + " monedas) ");
+							textoYAudio.setBoton(1,"Comprar Radar (" + alm.precioRadar() + " monedas) ");
+							textoYAudio.setBoton(2,"Comprar Escudo (" + alm.precioEscudo() + " monedas) ");
+							textoYAudio.setBoton(3,"Volver" );
+							textoYAudio.setTexto("¿Qué deseas comprar? Dinero: "+super.getDinero());
+
+							
+						} else {
+
+							textoYAudio.setTexto("Tienes radar con usos, no hay espacio en el inventario para otro");
+						}
+						
+
+						
+					} else {
+						textoYAudio.setTexto("No tienes dinero suficiente para la compra");
+					}
+					
+					
+
+					
+			    } else {textoYAudio.setTexto("No quedan existencias");}
+				
+				
+				textoYAudio.actualizarCambios();
+				break;
+			case 2:
+				
+				
+				if (alm.hayEscudos()) {
+					
+					if (super.getDinero() >= alm.precioEscudo()) {
+						
+						
+						if (this.confirmarCompra(alm.precioEscudo(), super.numEscudos(), alm.escudosRestantes())) {
+							super.bajarDineroEn(alm.precioEscudo());
+							super.darEscudo();
+							alm.consumirEscudo();
+						}
+						
+						textoYAudio.setBoton(0,"Comprar Misil (" + alm.precioMisil() + " monedas) ");
+						textoYAudio.setBoton(1,"Comprar Radar (" + alm.precioRadar() + " monedas) ");
+						textoYAudio.setBoton(2,"Comprar Escudo (" + alm.precioEscudo() + " monedas) ");
+						textoYAudio.setBoton(3,"Volver" );
+						textoYAudio.setTexto("¿Qué deseas comprar? Dinero: "+super.getDinero());
+						
+						
+
+						
+					} else {
+						textoYAudio.setTexto("No tienes dinero suficiente para la compra");
+					}
+					
+					
+
+					
+			    } else {textoYAudio.setTexto("No quedan existencias");}
+				
+				
+
+				
+				textoYAudio.actualizarCambios();
+			}
+			
+
+			
+			
+			
+		}
+		
+		
+
+			
+			
+
+			
+
+
+			
+		
+	}
+	
+	
 	
 	
 

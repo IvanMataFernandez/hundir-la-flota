@@ -30,7 +30,9 @@ public class Main {
 			
 		} catch (ExcepcionFinDePartida excepcion) {
 
-
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {}
 			
 			if (excepcion.ganoJ1()) {
 				TextoYAudio.getInstancia().setTexto("Jugador Humano gana");

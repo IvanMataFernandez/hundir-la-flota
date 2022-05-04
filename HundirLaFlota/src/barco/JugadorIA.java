@@ -490,7 +490,7 @@ public class JugadorIA extends Jugador {
 				super.actualizarCambios();
 				TextoYAudio.getInstancia().setTexto("IA refuerza barco con escudo");
 				TextoYAudio.getInstancia().actualizarCambios();
-				this.esperar(1000);
+				this.esperar(2000);
 
 			}
 			
@@ -536,7 +536,6 @@ public class JugadorIA extends Jugador {
 
 		
 		
-		this.esperar(1500);
 		
 		
 		// PONER ESCUDO ANTES DE TIRAR
@@ -675,7 +674,7 @@ public class JugadorIA extends Jugador {
 		textoYAudio.actualizarCambios();
 
 
-		this.esperar(1600);
+		this.esperar(500);
 
 		
 		return res[1];
@@ -707,8 +706,9 @@ public class JugadorIA extends Jugador {
 			super.repararBarco(f, c);
 			super.bajarDineroEn(precio);
 			textoYAudio.setTexto("La IA ha reparado un barco por valor de "+precio);
+			textoYAudio.setAudio("construccion");
 			textoYAudio.actualizarCambios();
-			super.esperar(1000);
+			super.esperar(500);
 		}
 		
 	}
@@ -722,22 +722,25 @@ public class JugadorIA extends Jugador {
 		
 		// Comprar RADAR (20% de probabilidad)
 		
-		if (!super.tieneRadar() && this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioRadar() && alm.hayRadares()) {
+		if (!super.tieneRadar() && this.generador.nextInt(5) == 0 && super.getDinero() >= alm.precioRadar() && alm.hayRadares()) {
 			alm.consumirRadar();
-			super.obtenerRadarNuevo();
+			super.darRadar();
 			super.bajarDineroEn(alm.precioRadar());
 			msg = "La IA compra un radar";
+			textoYAudio.setAudio("compra");
 		}
 		
 		// Comprar MISIL (20% de probabilidad)
 		
-		if (this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioMisil() && alm.hayMisiles()) {
+		if (this.generador.nextInt(5) == 0 && super.getDinero() >= alm.precioMisil() && alm.hayMisiles()) {
 			alm.consumirMisil();
 			super.darMisil();
 			super.bajarDineroEn(alm.precioMisil());
 			
 			if (msg.contentEquals("")) {
 				msg = "La IA compra un misil";
+				textoYAudio.setAudio("compra");
+
 			} else {
 				dosPrimerasCompras = true;
 			}
@@ -746,13 +749,15 @@ public class JugadorIA extends Jugador {
 		
 		// Comprar ESCUDO (20% de probabilidad)
 
-		if (this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioEscudo() && alm.hayEscudos()) {
+		if (this.generador.nextInt(5) == 0 && super.getDinero() >= alm.precioEscudo() && alm.hayEscudos()) {
 			alm.consumirEscudo();
 			super.darEscudo();
 			super.bajarDineroEn(alm.precioEscudo());
 			
 			if (msg.contentEquals("")) {
 				msg = "La IA compra un escudo ";
+				textoYAudio.setAudio("compra");
+
 			
 			} else if (dosPrimerasCompras) {
 				msg = msg +  ", un misil y un escudo";
@@ -766,7 +771,7 @@ public class JugadorIA extends Jugador {
 		if (!msg.contentEquals("")) {
 			textoYAudio.setTexto(msg);
 			textoYAudio.actualizarCambios();
-			super.esperar(1000);
+			super.esperar(500);
 		}
 		
 

@@ -14,15 +14,16 @@ public class Reproductor implements Observer {
 
 	
 	
-	/*   ARCHIVOS .WAV USADOS AHORA (SE PUEDEN CAMBIAR POR OTROS CON EL MISMO NOMBRE PARA CAMBIAR EL EFECTO):
+	/*   ARCHIVOS .WAV USADOS:
 	     - agua.wav ----------> Sonido cuando se da a una casilla sin barco
 	     - construccion.wav --> Sonido que suena cuando se pone un barco
 	     - error.wav ---------> Sonido que suena cuando se intenta hacer algo no permitido
 	     - hundido.wav -------> Sonido que suena cuando se hunde un barco
 	     - tocado.wav --------> Sonido que suena cuando se toca un barco (y no se hunde)
 	  	 - escudo.wav --------> Sonido que suena cuando se golpea un barco con escudo
-	  	 - escudoPuesto.wav --------> Sonido que suena cuando se pone un escudo a un barco
-
+	  	 - escudoPuesto.wav --> Sonido que suena cuando se pone un escudo a un barco
+		 - radar.wav ---------> Sonido que suena cuando se usa el radar
+		 - compra.wav --------> Sonido que suena cuando se compra algo
 	  
 	  
 	  

@@ -129,7 +129,7 @@ public abstract class Jugador extends Observable {
 	
 	protected boolean tieneRadar() {return this.radar.usosRestantes() != 0;}
 	
-	protected void obtenerRadarNuevo() {this.radar.recuperarUsos();}
+	protected void darRadar() {this.radar.recuperarUsos();}
 	
 	protected Posicion getDeteccionRadar() {return this.radar.getDeteccion();}
 	
