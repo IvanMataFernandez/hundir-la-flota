@@ -24,6 +24,8 @@ public class Radar implements Armamento {
 	
 	public int usosRestantes() {return this.usos;}
 	
+	public void recuperarUsos() {this.usos = 3;}
+	
 	public boolean[] usar (CasillaDeJuego[][] pMatrizA, Color[][] pMatrizB, Posicion pPos) {
 		
 		

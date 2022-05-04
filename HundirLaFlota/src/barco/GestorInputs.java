@@ -73,7 +73,7 @@ public class GestorInputs {
 
 		
 		
-		while (this.botonPulsado != -1) {
+		while (this.botonPulsado == -1) {
 			try {
 				Thread.sleep(100);
 				if (this.filaSelec != -1) {

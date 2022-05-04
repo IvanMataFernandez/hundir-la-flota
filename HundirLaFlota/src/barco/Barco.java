@@ -23,6 +23,24 @@ public abstract class Barco {
 	}
 	
 	
+	public void repararBarco(Color[][] matriz) {
+		boolean tieneEscudo = this.escudo != null;
+		
+		this.trozosDeBarcos.stream().forEach(p -> p.repararTrozo(matriz, tieneEscudo));
+	}
+	
+	
+	public int costeDeReparacionDeBarco() {
+		
+		if (this.estaHundido()) {
+			return -2;
+			
+		} else {
+			return (int) this.trozosDeBarcos.stream().filter(p -> p.disparado()).count() * this.precioPorCasilla;
+			
+		}
+		
+	}
 	
 	
 	

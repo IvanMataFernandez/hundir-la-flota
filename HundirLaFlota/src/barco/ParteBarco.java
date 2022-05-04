@@ -17,6 +17,26 @@ public class ParteBarco {
 		
 	}
 	
+	public void repararTrozo(Color[][] matriz, boolean pTieneEscudo) {
+		
+		if (this.disparado()) {
+			this.cas.marcarComoNoDisparado();
+			this.cas.ponerColorTrasReparar(matriz, pTieneEscudo);									
+		} 
+		
+	}
+	
+	
+	public void repararBarco(Color[][] matriz) {
+		this.barco.repararBarco(matriz);
+	}
+	
+	
+	public int costeReparacionDeBarco() {
+		
+		return this.barco.costeDeReparacionDeBarco();
+		
+	}
 	
 	
 	public boolean disparado() {return this.cas.disparado();}

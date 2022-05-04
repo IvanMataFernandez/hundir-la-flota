@@ -26,11 +26,32 @@ public class CasillaDeJuego {
 	
 	
 	
+	public void marcarComoNoDisparado() {this.disparado = false;}
 	
 	
 	
 	public void asignarParteBarco (ParteBarco pB) {this.trozoDeBarco = pB;}
 	
+	
+	
+	public void repararBarco(Color[][] matriz) {
+		this.trozoDeBarco.repararBarco(matriz);
+	}
+	
+	
+	public int costeDeReparacionDeBarco() {
+		// Pre: --
+		// Post: -2 -> Barco hundido | -1 -> No hay Barco. |  0 -> Ya reparado. |  1+ -> El coste de reparación
+		
+		
+		if (this.trozoDeBarco == null) {
+			return -1;
+		} else {
+			return this.trozoDeBarco.costeReparacionDeBarco();
+		}
+		
+		
+	}
 	
 	
 	public boolean barcoReforzadoConEscudo() {
@@ -59,6 +80,23 @@ public class CasillaDeJuego {
 	public void marcarCasilla(Color[][] pMatriz) {this.visible = true; this.disparado = true; pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoHundido");}
 	
 	public void visibilizarHundido(Color[][] pMatriz) {pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoHundido");}
+	
+	public void ponerColorTrasReparar(Color[][] pMatriz, boolean pEscudo) {
+		
+		
+			
+		if (pEscudo) {
+			pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoEscudo");
+				
+		} else {
+			pMatriz[this.posicion.getFila()][this.posicion.getCol()] = FabricaColores.getFabricaColores().generarColores("BarcoColocado");
+				
+		}
+	
+		
+
+		
+	}
 	
 	
 	public boolean seVio() {return this.visible;}
@@ -129,6 +167,7 @@ public class CasillaDeJuego {
 			
 		}
 		
+
 		
 
 	} 

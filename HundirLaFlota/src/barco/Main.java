@@ -17,6 +17,7 @@ public class Main {
 
 		try {
 			while (true) {
+				listaJugador.jugadorActualCompra();
 				listaJugador.jugadorActualDispara();
 				listaJugador.cambiarJugador();
 				

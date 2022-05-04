@@ -21,11 +21,7 @@ public class JugadorIA extends Jugador {
 	}
 
 	
-	private void esperar(int pMs) {
-		try {
-			Thread.sleep(pMs);
-		} catch (InterruptedException e) {}
-	}
+
 
 	public void colocarBarcos() {
 
@@ -687,8 +683,93 @@ public class JugadorIA extends Jugador {
 
 
 	public void procesarCompras() {
+		
+		// REPARAR BARCO
+		
+		this.procesarReparacion();
+		
+		this.procesarAdquisicionesDeMateriales();
+		
 
-		// NADA LUEGO AÑADIR COMPRAS
+	}
+	
+	private void procesarReparacion () {
+		
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		
+		int f = this.generador.nextInt(10);
+		int c = this.generador.nextInt(10);
+		
+		int precio = super.precioDeReparacionDeBarco(f,c);
+ 
+		
+		if (precio > 0 && precio <= super.getDinero()) {
+			super.repararBarco(f, c);
+			super.bajarDineroEn(precio);
+			textoYAudio.setTexto("La IA ha reparado un barco por valor de "+precio);
+			textoYAudio.actualizarCambios();
+			super.esperar(1000);
+		}
+		
+	}
+	
+	private void procesarAdquisicionesDeMateriales() {
+		
+		Almacen alm = Almacen.getAlmacen();
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		String msg = "";
+		boolean dosPrimerasCompras = false;
+		
+		// Comprar RADAR (20% de probabilidad)
+		
+		if (!super.tieneRadar() && this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioRadar() && alm.hayRadares()) {
+			alm.consumirRadar();
+			super.obtenerRadarNuevo();
+			super.bajarDineroEn(alm.precioRadar());
+			msg = "La IA compra un radar";
+		}
+		
+		// Comprar MISIL (20% de probabilidad)
+		
+		if (this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioMisil() && alm.hayMisiles()) {
+			alm.consumirMisil();
+			super.darMisil();
+			super.bajarDineroEn(alm.precioMisil());
+			
+			if (msg.contentEquals("")) {
+				msg = "La IA compra un misil";
+			} else {
+				dosPrimerasCompras = true;
+			}
+			
+		}
+		
+		// Comprar ESCUDO (20% de probabilidad)
+
+		if (this.generador.nextInt(1) == 0 && super.getDinero() >= alm.precioEscudo() && alm.hayEscudos()) {
+			alm.consumirEscudo();
+			super.darEscudo();
+			super.bajarDineroEn(alm.precioEscudo());
+			
+			if (msg.contentEquals("")) {
+				msg = "La IA compra un escudo ";
+			
+			} else if (dosPrimerasCompras) {
+				msg = msg +  ", un misil y un escudo";
+			
+			} else {
+				msg = msg + " y un escudo";
+			}
+			
+		} else if (dosPrimerasCompras) {msg = " y un misil";}
+		
+		if (!msg.contentEquals("")) {
+			textoYAudio.setTexto(msg);
+			textoYAudio.actualizarCambios();
+			super.esperar(1000);
+		}
+		
+
 	}
 		
 	

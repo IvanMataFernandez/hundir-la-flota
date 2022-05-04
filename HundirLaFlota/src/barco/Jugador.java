@@ -32,6 +32,10 @@ public abstract class Jugador extends Observable {
 	} */
 	
 	
+	protected void bajarDineroEn(int pDinero) {
+		this.dinero = this.dinero - pDinero;
+	}
+	
 	protected boolean getValorEscudoRadar() {
 		// Pre: La IA invoca este método y su radar contiene la posición de un barco rival.
 		// Post: La posicion detectada con el radar lleva escudo.
@@ -125,6 +129,8 @@ public abstract class Jugador extends Observable {
 	
 	protected boolean tieneRadar() {return this.radar.usosRestantes() != 0;}
 	
+	protected void obtenerRadarNuevo() {this.radar.recuperarUsos();}
+	
 	protected Posicion getDeteccionRadar() {return this.radar.getDeteccion();}
 	
 	
@@ -133,6 +139,10 @@ public abstract class Jugador extends Observable {
 	protected Posicion moverRadar() {this.radar.recolocarRadar(this.matriz); return this.radarEn();}
 	
 	protected Posicion radarEn() {return this.radar.getPosicion();}
+	
+	protected int precioDeReparacionDeBarco(int pF, int pC) {return this.matriz[pF][pC].costeDeReparacionDeBarco();}
+	
+	protected void repararBarco(int pF, int pC) {this.matriz[pF][pC].repararBarco(cambiosEnMatriz);}
 	
 	protected boolean usarRadarEnRival() {
 		
@@ -151,6 +161,10 @@ public abstract class Jugador extends Observable {
 		return res;
 		
 	}
+	
+	protected void darEscudo() {this.numEscudos++;}
+	
+	protected void darMisil() {this.numMisiles++;}
 	
 	public boolean leUsanRadar(Radar pRad) {
 		return pRad.usar(matriz, cambiosEnMatriz, null)[0];
@@ -420,7 +434,11 @@ public abstract class Jugador extends Observable {
 	
 
 	
-
+	protected void esperar(int pMs) {
+		try {
+			Thread.sleep(pMs);
+		} catch (InterruptedException e) {}
+	}
 	
 	/*	public Color calcularColor(int pF, int pC) {
 	

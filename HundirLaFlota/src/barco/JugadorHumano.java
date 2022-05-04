@@ -155,6 +155,7 @@ public class JugadorHumano extends Jugador {
 		textoYAudio.actualizarCambios();
 
 		
+		super.esperar(1000);
 		
 		
 	}
@@ -493,7 +494,7 @@ public class JugadorHumano extends Jugador {
 		GestorInputs inputs = GestorInputs.getGestor();
 		int boton = -1;
 		
-		while (boton != 2 ) {
+		while (boton != 2) {
 			textoYAudio.setTexto("¿Qué desea hacer? Dinero: "+super.getDinero());
 			textoYAudio.setBoton(0, "Reparar barco");
 			textoYAudio.setBoton(1, "Acceder tienda");
@@ -504,11 +505,13 @@ public class JugadorHumano extends Jugador {
 			
 			inputs.esperarInputDeBoton();
 			
-			if (inputs.getBotonPulsado() == 0) {
+			boton = inputs.getBotonPulsado();
+			
+			if (boton == 0) {
 				this.menuReparar();
 				
 				
-			} else if (inputs.getBotonPulsado() == 1) {
+			} else if (boton == 1) {
 				this.menuTienda();
 			}
 
@@ -544,12 +547,96 @@ public class JugadorHumano extends Jugador {
 	
 	// FALTAN ESTOS MENUS
 	
+
+	
+	
+	
 	private void menuReparar() {
+		TextoYAudio textoYAudio = TextoYAudio.getInstancia();
+		GestorInputs inputs = GestorInputs.getGestor();
+		boolean salir = false;
+		int f;
+		int c;
+		int precio;
+
+		textoYAudio.setTexto("¿Qué barco desea reparar? Dinero: "+super.getDinero());
+		textoYAudio.setBoton(0, "Volver");
+		textoYAudio.setBoton(1, "ocultar");
+		textoYAudio.setBoton(2, "ocultar");
+	
+		
+		while (!salir) {
+			textoYAudio.actualizarCambios();
+			
+
+			
+			inputs.esperarInput();
+			
+		
+			if (inputs.sePulsoBoton()) {
+				salir = true;
+				
+
+	
+			} else if (inputs.getMatrizJ1Selec()) {
+				f = inputs.getFila();
+				c = inputs.getCol();
+				precio = super.precioDeReparacionDeBarco(f, c);
+				
+				if (precio > 0 && precio <= super.getDinero()) {
+					textoYAudio.setTexto("Coste de reparación: "+precio+ " | Tu dinero: "+super.getDinero());
+					
+					textoYAudio.setBoton(0, "Reparar");
+					textoYAudio.setBoton(1, "No reparar");
+					
+					textoYAudio.actualizarCambios();
+					
+					inputs.esperarInputDeBoton();
+					
+					
+					if (inputs.getBotonPulsado() == 0) {
+					
+						super.repararBarco(f, c);
+						super.bajarDineroEn(precio);
+						super.actualizarCambios();
+
+
+
+						
+					} 
+					
+
+					
+
+					
+				} else if (precio == -1) {
+					textoYAudio.setTexto("No hay barco para reparar ahí ");
+					
+				} else if (precio == 0) { 
+					textoYAudio.setTexto("El barco ya está reparado");
+				
+				} else { // precio == -2
+					textoYAudio.setTexto("No se puede reparar un barco hundido.");
+					
+				}
+				textoYAudio.actualizarCambios();
+
+				super.esperar(1000);
+				
+				textoYAudio.setTexto("¿Qué barco desea reparar? Dinero: "+super.getDinero());
+				textoYAudio.setBoton(0, "Volver");
+				textoYAudio.setBoton(1, "ocultar");
+				
+				
+				
+			}			
+		}
 		
 		
+
+		
+
 	}
-	
-	
 	
 	private void menuTienda() {
 		
